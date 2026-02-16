@@ -80,6 +80,96 @@ namespace BoardingHouseSys.Data
                         );";
                     new MySqlCommand(sqlPayments, conn).ExecuteNonQuery();
 
+                    // ==========================================
+                    // NEW: Multi-Property Features
+                    // ==========================================
+
+                    // 1. Create BoardingHouses Table
+                    string sqlBH = @"
+                        CREATE TABLE IF NOT EXISTS BoardingHouses (
+                            Id INT PRIMARY KEY AUTO_INCREMENT,
+                            OwnerId INT NOT NULL,
+                            Name VARCHAR(100) NOT NULL,
+                            Address VARCHAR(255),
+                            Description TEXT,
+                            Rules TEXT,
+                            Amenities TEXT,
+                            ImagePath1 VARCHAR(500) NULL,
+                            ImagePath2 VARCHAR(500) NULL,
+                            ImagePath3 VARCHAR(500) NULL,
+                            IsActive BIT DEFAULT 1,
+                            CreatedAt DATETIME DEFAULT NOW(),
+                            FOREIGN KEY (OwnerId) REFERENCES Users(Id)
+                        );";
+                    new MySqlCommand(sqlBH, conn).ExecuteNonQuery();
+
+                    // 2. Add BoardingHouseId to Rooms
+                    // Check if column exists first to avoid errors on re-run
+                    try {
+                        string alterRooms = "ALTER TABLE Rooms ADD COLUMN BoardingHouseId INT NULL;";
+                        new MySqlCommand(alterRooms, conn).ExecuteNonQuery();
+                        string fkRooms = "ALTER TABLE Rooms ADD FOREIGN KEY (BoardingHouseId) REFERENCES BoardingHouses(Id);";
+                        new MySqlCommand(fkRooms, conn).ExecuteNonQuery();
+                    } catch (Exception) { /* Column likely exists */ }
+
+                    // 3. Add BoardingHouseId to Boarders
+                    try {
+                        string alterBoarders = "ALTER TABLE Boarders ADD COLUMN BoardingHouseId INT NULL;";
+                        new MySqlCommand(alterBoarders, conn).ExecuteNonQuery();
+                        string fkBoarders = "ALTER TABLE Boarders ADD FOREIGN KEY (BoardingHouseId) REFERENCES BoardingHouses(Id);";
+                        new MySqlCommand(fkBoarders, conn).ExecuteNonQuery();
+                    } catch (Exception) { /* Column likely exists */ }
+
+                    // 6. Add ProfilePicturePath to Boarders
+                    try {
+                        string alterBoardersPic = "ALTER TABLE Boarders ADD COLUMN ProfilePicturePath VARCHAR(500) NULL;";
+                        new MySqlCommand(alterBoardersPic, conn).ExecuteNonQuery();
+                    } catch (Exception) { /* Column likely exists */ }
+
+                    try {
+                        string alterBhPic1 = "ALTER TABLE BoardingHouses ADD COLUMN ImagePath1 VARCHAR(500) NULL;";
+                        new MySqlCommand(alterBhPic1, conn).ExecuteNonQuery();
+                    } catch (Exception) { /* Column likely exists */ }
+                    try {
+                        string alterBhPic2 = "ALTER TABLE BoardingHouses ADD COLUMN ImagePath2 VARCHAR(500) NULL;";
+                        new MySqlCommand(alterBhPic2, conn).ExecuteNonQuery();
+                    } catch (Exception) { /* Column likely exists */ }
+                    try {
+                        string alterBhPic3 = "ALTER TABLE BoardingHouses ADD COLUMN ImagePath3 VARCHAR(500) NULL;";
+                        new MySqlCommand(alterBhPic3, conn).ExecuteNonQuery();
+                    } catch (Exception) { /* Column likely exists */ }
+
+                    // 5. Seed Default Boarding House (Migration for existing data)
+                    // If we have rooms but no BoardingHouses, create a default one and link them.
+                    var checkBH = new MySqlCommand("SELECT COUNT(*) FROM BoardingHouses", conn);
+                    long bhCount = (long)checkBH.ExecuteScalar();
+
+                    if (bhCount == 0)
+                    {
+                        // Get the first Admin ID
+                        var cmdGetAdmin = new MySqlCommand("SELECT Id FROM Users WHERE Role IN ('Admin', 'SuperAdmin') LIMIT 1", conn);
+                        object? adminIdObj = cmdGetAdmin.ExecuteScalar();
+                        
+                        if (adminIdObj != null)
+                        {
+                            int adminId = Convert.ToInt32(adminIdObj);
+                            
+                            // Insert Default House
+                            string seedBH = @"
+                                INSERT INTO BoardingHouses (OwnerId, Name, Address, Description) 
+                                VALUES (@OwnerId, 'My Main Boarding House', 'Default Address', 'Main Property');
+                                SELECT LAST_INSERT_ID();";
+                            
+                            var cmdSeed = new MySqlCommand(seedBH, conn);
+                            cmdSeed.Parameters.AddWithValue("@OwnerId", adminId);
+                            int newBhId = Convert.ToInt32(cmdSeed.ExecuteScalar());
+
+                            // Update existing records to belong to this house
+                            new MySqlCommand($"UPDATE Rooms SET BoardingHouseId = {newBhId} WHERE BoardingHouseId IS NULL", conn).ExecuteNonQuery();
+                            new MySqlCommand($"UPDATE Boarders SET BoardingHouseId = {newBhId} WHERE BoardingHouseId IS NULL", conn).ExecuteNonQuery();
+                        }
+                    }
+
                     // 3. Seed Data (Only if empty)
                     var checkCmd = new MySqlCommand("SELECT COUNT(*) FROM Users", conn);
                     long userCount = (long)checkCmd.ExecuteScalar();

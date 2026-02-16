@@ -13,7 +13,7 @@
     <Compile Update="Forms\FormLogin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FormPayments.cs">
+    <Compile Update="Forms\FormOwnerProperties.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Forms\FormRooms.cs">

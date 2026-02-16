@@ -22,6 +22,23 @@ CREATE TABLE IF NOT EXISTS Rooms (
     CreatedAt DATETIME DEFAULT NOW()
 );
 
+-- 2.1 Boarding Houses Table
+CREATE TABLE IF NOT EXISTS BoardingHouses (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    OwnerId INT NOT NULL,
+    Name VARCHAR(100) NOT NULL,
+    Address VARCHAR(255),
+    Description TEXT,
+    Rules TEXT,
+    Amenities TEXT,
+    ImagePath1 VARCHAR(500) NULL,
+    ImagePath2 VARCHAR(500) NULL,
+    ImagePath3 VARCHAR(500) NULL,
+    IsActive BIT DEFAULT 1,
+    CreatedAt DATETIME DEFAULT NOW(),
+    FOREIGN KEY (OwnerId) REFERENCES Users(Id)
+);
+
 -- 3. Boarders Table
 CREATE TABLE IF NOT EXISTS Boarders (
     Id INT PRIMARY KEY AUTO_INCREMENT,

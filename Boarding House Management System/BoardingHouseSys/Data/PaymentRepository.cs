@@ -37,6 +37,33 @@ namespace BoardingHouseSys.Data
             return _dbHelper.ExecuteQuery(query);
         }
 
+        public DataTable SearchPayments(string keyword)
+        {
+            string query = @"
+                SELECT 
+                    p.Id, 
+                    b.FullName AS BoarderName, 
+                    r.RoomNumber, 
+                    p.Amount, 
+                    p.MonthPaid, 
+                    p.YearPaid, 
+                    p.PaymentDate, 
+                    p.Status, 
+                    p.Notes,
+                    p.BoarderId
+                FROM Payments p
+                JOIN Boarders b ON p.BoarderId = b.Id
+                LEFT JOIN Rooms r ON b.RoomId = r.Id
+                WHERE (b.FullName LIKE @Keyword OR r.RoomNumber LIKE @Keyword OR p.Status LIKE @Keyword OR p.MonthPaid LIKE @Keyword OR CAST(p.Amount AS CHAR) LIKE @Keyword)
+                ORDER BY p.PaymentDate DESC";
+
+            MySqlParameter[] parameters = {
+                new MySqlParameter("@Keyword", "%" + keyword + "%")
+            };
+
+            return _dbHelper.ExecuteQuery(query, parameters);
+        }
+
         public DataTable GetPaymentsByBoarderId(int boarderId)
         {
             string query = @"

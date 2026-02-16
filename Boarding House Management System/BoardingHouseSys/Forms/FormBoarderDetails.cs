@@ -1,9 +1,14 @@
+#nullable enable
+#pragma warning disable CS8618
+#pragma warning disable CS8622
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Data;
 using BoardingHouseSys.Data;
 using BoardingHouseSys.Models;
+using BoardingHouseSys.UI;
+using System.IO;
 
 namespace BoardingHouseSys.Forms
 {
@@ -12,238 +17,445 @@ namespace BoardingHouseSys.Forms
         private User _currentUser;
         private BoarderRepository _boarderRepo;
         private PaymentRepository _paymentRepo;
+        private int _currentBoarderId;
         
-        private Label lblNameVal = null!;
-        private Label lblAddressVal = null!;
-        private Label lblPhoneVal = null!;
-        private Label lblRoomVal = null!;
-        private Label lblRentVal = null!;
-        private DataGridView dgvHistory = null!;
-        private Label lblHeader;
-        private GroupBox grpInfo;
-        private Label lblName;
-        private Label lblAddress;
-        private Label lblPhone;
-        private Label lblRoom;
-        private Label lblRent;
-        private Label lblHistory;
-        private Button btnClose = null!;
+        // UI Controls - Exposed for Designer
+        private System.ComponentModel.IContainer? components = null;
+        private System.Windows.Forms.Panel pnlTop;
+        private System.Windows.Forms.Button btnBackTop;
+        private System.Windows.Forms.TableLayoutPanel mainLayout;
+        private System.Windows.Forms.Label lblHeader;
+        private System.Windows.Forms.GroupBox grpInfo;
+        private System.Windows.Forms.Panel infoPanel;
+        private System.Windows.Forms.PictureBox picProfile;
+        private System.Windows.Forms.Button btnUploadPhoto;
+        private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.Label lblNameVal;
+        private System.Windows.Forms.Label lblAddress;
+        private System.Windows.Forms.Label lblAddressVal;
+        private System.Windows.Forms.Label lblPhone;
+        private System.Windows.Forms.Label lblPhoneVal;
+        private System.Windows.Forms.Label lblRoom;
+        private System.Windows.Forms.Label lblRoomVal;
+        private System.Windows.Forms.Label lblRent;
+        private System.Windows.Forms.Label lblRentVal;
+        private System.Windows.Forms.Panel rightPanel;
+        private System.Windows.Forms.Label lblHistory;
+        private System.Windows.Forms.DataGridView dgvHistory;
+        private System.Windows.Forms.FlowLayoutPanel actionPanel;
+        private System.Windows.Forms.Button btnClose;
+
+        // Parameterless constructor for Designer support
+        public FormBoarderDetails()
+        {
+            InitializeComponent();
+            WireEvents();
+            _currentUser = new User();
+            _boarderRepo = new BoarderRepository();
+            _paymentRepo = new PaymentRepository();
+        }
 
         public FormBoarderDetails(User user)
         {
             InitializeComponent();
+            WireEvents();
+            
             _currentUser = user;
             _boarderRepo = new BoarderRepository();
             _paymentRepo = new PaymentRepository();
             
-            // Event Handler moved to Constructor
-            btnClose.Click += (s, e) => this.Close();
-
             LoadDetails();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
         private void InitializeComponent()
         {
-            this.lblHeader = new System.Windows.Forms.Label();
-            this.grpInfo = new System.Windows.Forms.GroupBox();
-            this.lblName = new System.Windows.Forms.Label();
-            this.lblNameVal = new System.Windows.Forms.Label();
-            this.lblAddress = new System.Windows.Forms.Label();
-            this.lblAddressVal = new System.Windows.Forms.Label();
-            this.lblPhone = new System.Windows.Forms.Label();
-            this.lblPhoneVal = new System.Windows.Forms.Label();
-            this.lblRoom = new System.Windows.Forms.Label();
-            this.lblRoomVal = new System.Windows.Forms.Label();
-            this.lblRent = new System.Windows.Forms.Label();
-            this.lblRentVal = new System.Windows.Forms.Label();
-            this.lblHistory = new System.Windows.Forms.Label();
-            this.dgvHistory = new System.Windows.Forms.DataGridView();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.grpInfo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvHistory)).BeginInit();
-            this.SuspendLayout();
+            pnlTop = new Panel();
+            btnBackTop = new Button();
+            mainLayout = new TableLayoutPanel();
+            lblHeader = new Label();
+            grpInfo = new GroupBox();
+            infoPanel = new Panel();
+            picProfile = new PictureBox();
+            btnUploadPhoto = new Button();
+            lblName = new Label();
+            lblNameVal = new Label();
+            lblAddress = new Label();
+            lblAddressVal = new Label();
+            lblPhone = new Label();
+            lblPhoneVal = new Label();
+            lblRoom = new Label();
+            lblRoomVal = new Label();
+            lblRent = new Label();
+            lblRentVal = new Label();
+            rightPanel = new Panel();
+            dgvHistory = new DataGridView();
+            lblHistory = new Label();
+            actionPanel = new FlowLayoutPanel();
+            btnClose = new Button();
+            pnlTop.SuspendLayout();
+            mainLayout.SuspendLayout();
+            grpInfo.SuspendLayout();
+            infoPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picProfile).BeginInit();
+            rightPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvHistory).BeginInit();
+            actionPanel.SuspendLayout();
+            SuspendLayout();
+            // 
+            // pnlTop
+            // 
+            pnlTop.BackColor = Color.FromArgb(50, 50, 50);
+            pnlTop.Controls.Add(btnBackTop);
+            pnlTop.Dock = DockStyle.Top;
+            pnlTop.Location = new Point(0, 0);
+            pnlTop.Name = "pnlTop";
+            pnlTop.Padding = new Padding(10);
+            pnlTop.Size = new Size(1200, 50);
+            pnlTop.TabIndex = 1;
+            // 
+            // btnBackTop
+            // 
+            btnBackTop.BackColor = Color.White;
+            btnBackTop.Dock = DockStyle.Left;
+            btnBackTop.FlatStyle = FlatStyle.Flat;
+            btnBackTop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnBackTop.Location = new Point(10, 10);
+            btnBackTop.Name = "btnBackTop";
+            btnBackTop.Size = new Size(180, 30);
+            btnBackTop.TabIndex = 0;
+            btnBackTop.Text = "← Back to Dashboard";
+            btnBackTop.TextAlign = ContentAlignment.MiddleLeft;
+            btnBackTop.UseVisualStyleBackColor = false;
+            // 
+            // mainLayout
+            // 
+            mainLayout.ColumnCount = 2;
+            mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+            mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+            mainLayout.Controls.Add(lblHeader, 0, 0);
+            mainLayout.Controls.Add(grpInfo, 0, 1);
+            mainLayout.Controls.Add(rightPanel, 1, 1);
+            mainLayout.Controls.Add(actionPanel, 1, 2);
+            mainLayout.Dock = DockStyle.Fill;
+            mainLayout.Location = new Point(0, 50);
+            mainLayout.Name = "mainLayout";
+            mainLayout.Padding = new Padding(20);
+            mainLayout.RowCount = 3;
+            mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+            mainLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            mainLayout.Size = new Size(1200, 750);
+            mainLayout.TabIndex = 0;
             // 
             // lblHeader
             // 
-            this.lblHeader.AutoSize = true;
-            this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblHeader.Location = new System.Drawing.Point(20, 10);
-            this.lblHeader.Name = "lblHeader";
-            this.lblHeader.Size = new System.Drawing.Size(123, 30);
-            this.lblHeader.TabIndex = 0;
-            this.lblHeader.Text = "My Profile";
+            lblHeader.AutoSize = true;
+            mainLayout.SetColumnSpan(lblHeader, 2);
+            lblHeader.Dock = DockStyle.Fill;
+            lblHeader.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            lblHeader.Location = new Point(23, 20);
+            lblHeader.Name = "lblHeader";
+            lblHeader.Size = new Size(1154, 60);
+            lblHeader.TabIndex = 0;
+            lblHeader.Text = "My Profile";
+            lblHeader.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // grpInfo
             // 
-            this.grpInfo.Controls.Add(this.lblName);
-            this.grpInfo.Controls.Add(this.lblNameVal);
-            this.grpInfo.Controls.Add(this.lblAddress);
-            this.grpInfo.Controls.Add(this.lblAddressVal);
-            this.grpInfo.Controls.Add(this.lblPhone);
-            this.grpInfo.Controls.Add(this.lblPhoneVal);
-            this.grpInfo.Controls.Add(this.lblRoom);
-            this.grpInfo.Controls.Add(this.lblRoomVal);
-            this.grpInfo.Controls.Add(this.lblRent);
-            this.grpInfo.Controls.Add(this.lblRentVal);
-            this.grpInfo.Location = new System.Drawing.Point(20, 50);
-            this.grpInfo.Name = "grpInfo";
-            this.grpInfo.Size = new System.Drawing.Size(590, 160);
-            this.grpInfo.TabIndex = 1;
-            this.grpInfo.TabStop = false;
-            this.grpInfo.Text = "Personal Information";
+            grpInfo.Controls.Add(infoPanel);
+            grpInfo.Dock = DockStyle.Fill;
+            grpInfo.Font = new Font("Segoe UI", 12F);
+            grpInfo.Location = new Point(23, 83);
+            grpInfo.Name = "grpInfo";
+            grpInfo.Padding = new Padding(20);
+            grpInfo.Size = new Size(458, 594);
+            grpInfo.TabIndex = 1;
+            grpInfo.TabStop = false;
+            grpInfo.Text = "Personal Information";
+            // 
+            // infoPanel
+            // 
+            infoPanel.Controls.Add(picProfile);
+            infoPanel.Controls.Add(btnUploadPhoto);
+            infoPanel.Controls.Add(lblName);
+            infoPanel.Controls.Add(lblNameVal);
+            infoPanel.Controls.Add(lblAddress);
+            infoPanel.Controls.Add(lblAddressVal);
+            infoPanel.Controls.Add(lblPhone);
+            infoPanel.Controls.Add(lblPhoneVal);
+            infoPanel.Controls.Add(lblRoom);
+            infoPanel.Controls.Add(lblRoomVal);
+            infoPanel.Controls.Add(lblRent);
+            infoPanel.Controls.Add(lblRentVal);
+            infoPanel.Dock = DockStyle.Fill;
+            infoPanel.Location = new Point(20, 52);
+            infoPanel.Name = "infoPanel";
+            infoPanel.Size = new Size(418, 522);
+            infoPanel.TabIndex = 0;
+            // 
+            // picProfile
+            // 
+            picProfile.BorderStyle = BorderStyle.FixedSingle;
+            picProfile.Location = new Point(20, 30);
+            picProfile.Name = "picProfile";
+            picProfile.Size = new Size(150, 150);
+            picProfile.SizeMode = PictureBoxSizeMode.Zoom;
+            picProfile.TabIndex = 0;
+            picProfile.TabStop = false;
+            // 
+            // btnUploadPhoto
+            // 
+            btnUploadPhoto.BackColor = UITheme.PrimaryColor;
+            btnUploadPhoto.FlatStyle = FlatStyle.Flat;
+            btnUploadPhoto.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnUploadPhoto.ForeColor = Color.White;
+            btnUploadPhoto.Location = new Point(20, 190);
+            btnUploadPhoto.Name = "btnUploadPhoto";
+            btnUploadPhoto.Size = new Size(150, 45);
+            btnUploadPhoto.TabIndex = 1;
+            btnUploadPhoto.Text = "Change Photo";
+            btnUploadPhoto.UseVisualStyleBackColor = false;
             // 
             // lblName
             // 
-            this.lblName.AutoSize = true;
-            this.lblName.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblName.Location = new System.Drawing.Point(20, 35);
-            this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(53, 19);
-            this.lblName.TabIndex = 0;
-            this.lblName.Text = "Name:";
+            lblName.AutoSize = true;
+            lblName.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblName.Location = new Point(200, 30);
+            lblName.Name = "lblName";
+            lblName.Size = new Size(73, 28);
+            lblName.TabIndex = 2;
+            lblName.Text = "Name:";
             // 
             // lblNameVal
             // 
-            this.lblNameVal.AutoSize = true;
-            this.lblNameVal.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblNameVal.Location = new System.Drawing.Point(100, 35);
-            this.lblNameVal.Name = "lblNameVal";
-            this.lblNameVal.Size = new System.Drawing.Size(70, 19);
-            this.lblNameVal.TabIndex = 1;
-            this.lblNameVal.Text = "Loading...";
+            lblNameVal.AutoEllipsis = true;
+            lblNameVal.Font = new Font("Segoe UI", 10F);
+            lblNameVal.Location = new Point(200, 60);
+            lblNameVal.Name = "lblNameVal";
+            lblNameVal.Size = new Size(200, 28);
+            lblNameVal.TabIndex = 3;
+            lblNameVal.Text = "...";
             // 
             // lblAddress
             // 
-            this.lblAddress.AutoSize = true;
-            this.lblAddress.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblAddress.Location = new System.Drawing.Point(20, 70);
-            this.lblAddress.Name = "lblAddress";
-            this.lblAddress.Size = new System.Drawing.Size(67, 19);
-            this.lblAddress.TabIndex = 2;
-            this.lblAddress.Text = "Address:";
+            lblAddress.AutoSize = true;
+            lblAddress.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblAddress.Location = new Point(20, 240);
+            lblAddress.Name = "lblAddress";
+            lblAddress.Size = new Size(92, 28);
+            lblAddress.TabIndex = 4;
+            lblAddress.Text = "Address:";
             // 
             // lblAddressVal
             // 
-            this.lblAddressVal.AutoSize = true;
-            this.lblAddressVal.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblAddressVal.Location = new System.Drawing.Point(100, 70);
-            this.lblAddressVal.Name = "lblAddressVal";
-            this.lblAddressVal.Size = new System.Drawing.Size(70, 19);
-            this.lblAddressVal.TabIndex = 3;
-            this.lblAddressVal.Text = "Loading...";
+            lblAddressVal.AutoEllipsis = true;
+            lblAddressVal.Font = new Font("Segoe UI", 10F);
+            lblAddressVal.Location = new Point(20, 270);
+            lblAddressVal.Name = "lblAddressVal";
+            lblAddressVal.Size = new Size(380, 60);
+            lblAddressVal.TabIndex = 5;
+            lblAddressVal.Text = "...";
             // 
             // lblPhone
             // 
-            this.lblPhone.AutoSize = true;
-            this.lblPhone.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblPhone.Location = new System.Drawing.Point(20, 105);
-            this.lblPhone.Name = "lblPhone";
-            this.lblPhone.Size = new System.Drawing.Size(55, 19);
-            this.lblPhone.TabIndex = 4;
-            this.lblPhone.Text = "Phone:";
+            lblPhone.AutoSize = true;
+            lblPhone.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblPhone.Location = new Point(20, 340);
+            lblPhone.Name = "lblPhone";
+            lblPhone.Size = new Size(76, 28);
+            lblPhone.TabIndex = 6;
+            lblPhone.Text = "Phone:";
             // 
             // lblPhoneVal
             // 
-            this.lblPhoneVal.AutoSize = true;
-            this.lblPhoneVal.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblPhoneVal.Location = new System.Drawing.Point(100, 105);
-            this.lblPhoneVal.Name = "lblPhoneVal";
-            this.lblPhoneVal.Size = new System.Drawing.Size(70, 19);
-            this.lblPhoneVal.TabIndex = 5;
-            this.lblPhoneVal.Text = "Loading...";
+            lblPhoneVal.AutoEllipsis = true;
+            lblPhoneVal.Font = new Font("Segoe UI", 10F);
+            lblPhoneVal.Location = new Point(110, 340);
+            lblPhoneVal.Name = "lblPhoneVal";
+            lblPhoneVal.Size = new Size(200, 28);
+            lblPhoneVal.TabIndex = 7;
+            lblPhoneVal.Text = "...";
             // 
             // lblRoom
             // 
-            this.lblRoom.AutoSize = true;
-            this.lblRoom.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblRoom.Location = new System.Drawing.Point(350, 35);
-            this.lblRoom.Name = "lblRoom";
-            this.lblRoom.Size = new System.Drawing.Size(53, 19);
-            this.lblRoom.TabIndex = 6;
-            this.lblRoom.Text = "Room:";
+            lblRoom.AutoSize = true;
+            lblRoom.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblRoom.Location = new Point(20, 380);
+            lblRoom.Name = "lblRoom";
+            lblRoom.Size = new Size(72, 28);
+            lblRoom.TabIndex = 8;
+            lblRoom.Text = "Room:";
             // 
             // lblRoomVal
             // 
-            this.lblRoomVal.AutoSize = true;
-            this.lblRoomVal.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblRoomVal.Location = new System.Drawing.Point(410, 35);
-            this.lblRoomVal.Name = "lblRoomVal";
-            this.lblRoomVal.Size = new System.Drawing.Size(21, 19);
-            this.lblRoomVal.TabIndex = 7;
-            this.lblRoomVal.Text = "...";
+            lblRoomVal.AutoEllipsis = true;
+            lblRoomVal.Font = new Font("Segoe UI", 10F);
+            lblRoomVal.Location = new Point(110, 380);
+            lblRoomVal.Name = "lblRoomVal";
+            lblRoomVal.Size = new Size(200, 28);
+            lblRoomVal.TabIndex = 9;
+            lblRoomVal.Text = "...";
             // 
             // lblRent
             // 
-            this.lblRent.AutoSize = true;
-            this.lblRent.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblRent.Location = new System.Drawing.Point(350, 70);
-            this.lblRent.Name = "lblRent";
-            this.lblRent.Size = new System.Drawing.Size(44, 19);
-            this.lblRent.TabIndex = 8;
-            this.lblRent.Text = "Rent:";
+            lblRent.AutoSize = true;
+            lblRent.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblRent.Location = new Point(20, 420);
+            lblRent.Name = "lblRent";
+            lblRent.Size = new Size(61, 28);
+            lblRent.TabIndex = 10;
+            lblRent.Text = "Rent:";
             // 
             // lblRentVal
             // 
-            this.lblRentVal.AutoSize = true;
-            this.lblRentVal.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblRentVal.Location = new System.Drawing.Point(410, 70);
-            this.lblRentVal.Name = "lblRentVal";
-            this.lblRentVal.Size = new System.Drawing.Size(21, 19);
-            this.lblRentVal.TabIndex = 9;
-            this.lblRentVal.Text = "...";
+            lblRentVal.AutoEllipsis = true;
+            lblRentVal.Font = new Font("Segoe UI", 10F);
+            lblRentVal.Location = new Point(110, 420);
+            lblRentVal.Name = "lblRentVal";
+            lblRentVal.Size = new Size(200, 28);
+            lblRentVal.TabIndex = 11;
+            lblRentVal.Text = "...";
             // 
-            // lblHistory
+            // rightPanel
             // 
-            this.lblHistory.AutoSize = true;
-            this.lblHistory.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblHistory.Location = new System.Drawing.Point(20, 230);
-            this.lblHistory.Name = "lblHistory";
-            this.lblHistory.Size = new System.Drawing.Size(137, 21);
-            this.lblHistory.TabIndex = 2;
-            this.lblHistory.Text = "Payment History";
+            rightPanel.Controls.Add(dgvHistory);
+            rightPanel.Controls.Add(lblHistory);
+            rightPanel.Dock = DockStyle.Fill;
+            rightPanel.Location = new Point(487, 83);
+            rightPanel.Name = "rightPanel";
+            rightPanel.Padding = new Padding(10);
+            rightPanel.Size = new Size(690, 594);
+            rightPanel.TabIndex = 2;
             // 
             // dgvHistory
             // 
-            this.dgvHistory.AllowUserToAddRows = false;
-            this.dgvHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvHistory.BackgroundColor = System.Drawing.Color.White;
-            this.dgvHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvHistory.Location = new System.Drawing.Point(20, 260);
-            this.dgvHistory.Name = "dgvHistory";
-            this.dgvHistory.ReadOnly = true;
-            this.dgvHistory.RowHeadersVisible = false;
-            this.dgvHistory.Size = new System.Drawing.Size(590, 230);
-            this.dgvHistory.TabIndex = 3;
+            dgvHistory.AllowUserToAddRows = false;
+            dgvHistory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvHistory.BackgroundColor = Color.White;
+            dgvHistory.ColumnHeadersHeight = 34;
+            dgvHistory.Dock = DockStyle.Fill;
+            dgvHistory.Location = new Point(10, 50);
+            dgvHistory.Name = "dgvHistory";
+            dgvHistory.ReadOnly = true;
+            dgvHistory.RowHeadersVisible = false;
+            dgvHistory.RowHeadersWidth = 62;
+            dgvHistory.Size = new Size(670, 534);
+            dgvHistory.TabIndex = 0;
+            // 
+            // lblHistory
+            // 
+            lblHistory.Dock = DockStyle.Top;
+            lblHistory.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblHistory.Location = new Point(10, 10);
+            lblHistory.Name = "lblHistory";
+            lblHistory.Size = new Size(670, 40);
+            lblHistory.TabIndex = 1;
+            lblHistory.Text = "Payment History";
+            // 
+            // actionPanel
+            // 
+            actionPanel.Controls.Add(btnClose);
+            actionPanel.Dock = DockStyle.Fill;
+            actionPanel.FlowDirection = FlowDirection.RightToLeft;
+            actionPanel.Location = new Point(487, 683);
+            actionPanel.Name = "actionPanel";
+            actionPanel.Size = new Size(690, 44);
+            actionPanel.TabIndex = 3;
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(275, 510);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(100, 35);
-            this.btnClose.TabIndex = 4;
-            this.btnClose.Text = "Close";
-            this.btnClose.UseVisualStyleBackColor = true;
+            btnClose.BackColor = Color.LightSlateGray;
+            btnClose.FlatStyle = FlatStyle.Flat;
+            btnClose.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnClose.ForeColor = Color.White;
+            btnClose.Location = new Point(487, 3);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(200, 40);
+            btnClose.TabIndex = 0;
+            btnClose.Text = "Back to Dashboard";
+            btnClose.UseVisualStyleBackColor = false;
             // 
             // FormBoarderDetails
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(650, 600);
-            this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.dgvHistory);
-            this.Controls.Add(this.lblHistory);
-            this.Controls.Add(this.grpInfo);
-            this.Controls.Add(this.lblHeader);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.Name = "FormBoarderDetails";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "My Details";
-            this.grpInfo.ResumeLayout(false);
-            this.grpInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvHistory)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            BackColor = Color.WhiteSmoke;
+            ClientSize = new Size(1200, 800);
+            Controls.Add(mainLayout);
+            Controls.Add(pnlTop);
+            Name = "FormBoarderDetails";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "My Details";
+            WindowState = FormWindowState.Maximized;
+            pnlTop.ResumeLayout(false);
+            mainLayout.ResumeLayout(false);
+            mainLayout.PerformLayout();
+            grpInfo.ResumeLayout(false);
+            infoPanel.ResumeLayout(false);
+            infoPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picProfile).EndInit();
+            rightPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvHistory).EndInit();
+            actionPanel.ResumeLayout(false);
+            ResumeLayout(false);
+        }
+
+        private void WireEvents()
+        {
+            this.btnClose.Click += (s, e) => this.Close();
+            this.btnBackTop.Click += (s, e) => this.Close();
+            this.btnUploadPhoto.Click += BtnUploadPhoto_Click;
+        }
+
+        private void BtnUploadPhoto_Click(object? sender, EventArgs e)
+        {
+            if (_currentBoarderId == 0)
+            {
+                MessageBox.Show("Profile not loaded correctly.");
+                return;
+            }
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Select Profile Picture";
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string sourcePath = ofd.FileName;
+                        string folderPath = Path.Combine(Application.StartupPath, "ProfilePictures");
+                        if (!Directory.Exists(folderPath))
+                        {
+                            Directory.CreateDirectory(folderPath);
+                        }
+
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(sourcePath);
+                        string destPath = Path.Combine(folderPath, fileName);
+                        
+                        File.Copy(sourcePath, destPath, true);
+                        string relativePath = "ProfilePictures/" + fileName;
+
+                        // Update DB via Repository
+                        _boarderRepo.UpdateProfilePicture(_currentBoarderId, relativePath);
+
+                        // Update UI
+                        picProfile.Image = Image.FromFile(destPath);
+                        MessageBox.Show("Profile picture updated!");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error updating photo: " + ex.Message);
+                    }
+                }
+            }
         }
 
         private void LoadDetails()
@@ -265,7 +477,19 @@ namespace BoardingHouseSys.Forms
                     lblRentVal.Text = (rate != DBNull.Value) ? Convert.ToDecimal(rate).ToString("C") : "N/A";
 
                     int boarderId = Convert.ToInt32(row["Id"]);
+                    _currentBoarderId = boarderId; // Store ID
                     LoadHistory(boarderId);
+                    
+                    // Load Profile Picture
+                    string? profilePath = row["ProfilePicturePath"] as string;
+                    if (!string.IsNullOrEmpty(profilePath))
+                    {
+                        string fullPath = Path.Combine(Application.StartupPath, profilePath);
+                        if (File.Exists(fullPath))
+                        {
+                            picProfile.Image = Image.FromFile(fullPath);
+                        }
+                    }
                 }
                 else
                 {

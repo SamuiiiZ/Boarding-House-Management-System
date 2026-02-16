@@ -16,29 +16,72 @@ namespace BoardingHouseSys.Data
 
         public DataTable GetAllRooms()
         {
-            string query = "SELECT Id, RoomNumber, Capacity, MonthlyRate FROM Rooms WHERE IsActive = 1";
+            string query = "SELECT Id, RoomNumber, Capacity, MonthlyRate, BoardingHouseId FROM Rooms WHERE IsActive = 1";
             return _dbHelper.ExecuteQuery(query);
+        }
+
+        public DataTable GetRoomsByBoardingHouse(int boardingHouseId)
+        {
+            string query = "SELECT Id, RoomNumber, Capacity, MonthlyRate, BoardingHouseId FROM Rooms WHERE IsActive = 1 AND BoardingHouseId = @BoardingHouseId";
+            MySqlParameter[] parameters = {
+                new MySqlParameter("@BoardingHouseId", boardingHouseId)
+            };
+            return _dbHelper.ExecuteQuery(query, parameters);
+        }
+
+        public DataTable SearchRooms(string keyword)
+        {
+            string query = @"
+                SELECT Id, RoomNumber, Capacity, MonthlyRate, BoardingHouseId 
+                FROM Rooms 
+                WHERE IsActive = 1 
+                AND (RoomNumber LIKE @Keyword OR CAST(Capacity AS CHAR) LIKE @Keyword OR CAST(MonthlyRate AS CHAR) LIKE @Keyword)";
+
+            MySqlParameter[] parameters = {
+                new MySqlParameter("@Keyword", "%" + keyword + "%")
+            };
+
+            return _dbHelper.ExecuteQuery(query, parameters);
+        }
+
+        public DataTable SearchRoomsByBoardingHouse(int boardingHouseId, string keyword)
+        {
+            string query = @"
+                SELECT Id, RoomNumber, Capacity, MonthlyRate, BoardingHouseId 
+                FROM Rooms 
+                WHERE IsActive = 1 
+                AND BoardingHouseId = @BoardingHouseId
+                AND (RoomNumber LIKE @Keyword OR CAST(Capacity AS CHAR) LIKE @Keyword OR CAST(MonthlyRate AS CHAR) LIKE @Keyword)";
+
+            MySqlParameter[] parameters = {
+                new MySqlParameter("@BoardingHouseId", boardingHouseId),
+                new MySqlParameter("@Keyword", "%" + keyword + "%")
+            };
+
+            return _dbHelper.ExecuteQuery(query, parameters);
         }
 
         public void AddRoom(Room room)
         {
-            string query = "INSERT INTO Rooms (RoomNumber, Capacity, MonthlyRate, IsActive) VALUES (@RoomNumber, @Capacity, @MonthlyRate, 1)";
+            string query = "INSERT INTO Rooms (RoomNumber, Capacity, MonthlyRate, BoardingHouseId, IsActive) VALUES (@RoomNumber, @Capacity, @MonthlyRate, @BoardingHouseId, 1)";
             MySqlParameter[] parameters = {
                 new MySqlParameter("@RoomNumber", room.RoomNumber),
                 new MySqlParameter("@Capacity", room.Capacity),
-                new MySqlParameter("@MonthlyRate", room.MonthlyRate)
+                new MySqlParameter("@MonthlyRate", room.MonthlyRate),
+                new MySqlParameter("@BoardingHouseId", room.BoardingHouseId)
             };
             _dbHelper.ExecuteNonQuery(query, parameters);
         }
         
         public void UpdateRoom(Room room)
         {
-            string query = "UPDATE Rooms SET RoomNumber = @RoomNumber, Capacity = @Capacity, MonthlyRate = @MonthlyRate WHERE Id = @Id";
+            string query = "UPDATE Rooms SET RoomNumber = @RoomNumber, Capacity = @Capacity, MonthlyRate = @MonthlyRate, BoardingHouseId = @BoardingHouseId WHERE Id = @Id";
             MySqlParameter[] parameters = {
                 new MySqlParameter("@Id", room.Id),
                 new MySqlParameter("@RoomNumber", room.RoomNumber),
                 new MySqlParameter("@Capacity", room.Capacity),
-                new MySqlParameter("@MonthlyRate", room.MonthlyRate)
+                new MySqlParameter("@MonthlyRate", room.MonthlyRate),
+                new MySqlParameter("@BoardingHouseId", room.BoardingHouseId)
             };
             _dbHelper.ExecuteNonQuery(query, parameters);
         }

@@ -1,8 +1,12 @@
+#nullable enable
+#pragma warning disable CS8618
+#pragma warning disable CS8622
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 using BoardingHouseSys.Data;
 using BoardingHouseSys.Models;
+using BoardingHouseSys.UI;
 
 namespace BoardingHouseSys.Forms
 {
@@ -27,9 +31,22 @@ namespace BoardingHouseSys.Forms
         private Label lblRole = null!;
         private int _selectedUserId = 0;
 
+        private Panel pnlTop = null!;
+        private Button btnBackTop = null!;
+
+        // Parameterless constructor for Designer support
+        public FormUsers()
+        {
+            InitializeComponent();
+            WireEvents();
+            _currentUser = new User();
+            _repository = new UserRepository();
+        }
+
         public FormUsers(User user)
         {
             InitializeComponent();
+            WireEvents();
             _currentUser = user;
             _repository = new UserRepository();
 
@@ -43,180 +60,247 @@ namespace BoardingHouseSys.Forms
                 cmbRole.Items.Add("SuperAdmin");
             }
             cmbRole.SelectedIndex = 0;
+            
+            LoadUsers();
+        }
 
-            // Event Handlers
+        private void WireEvents()
+        {
             this.btnAdd.Click += (s, e) => AddUser();
             this.btnUpdate.Click += (s, e) => UpdateUser();
             this.btnDelete.Click += (s, e) => DeleteUser();
             this.btnRefresh.Click += (s, e) => LoadUsers();
             this.btnBack.Click += (s, e) => this.Close();
+            this.btnBackTop.Click += (s, e) => this.Close();
             this.dgvUsers.CellClick += DgvUsers_CellClick;
-            this.Load += (s, e) => LoadUsers();
+            this.grpInput.Enter += grpInput_Enter;
         }
 
         private void InitializeComponent()
         {
-            dgvUsers = new DataGridView();
-            txtUsername = new TextBox();
-            txtPassword = new TextBox();
-            cmbRole = new ComboBox();
-            btnAdd = new Button();
-            btnUpdate = new Button();
-            btnDelete = new Button();
-            btnRefresh = new Button();
-            btnBack = new Button();
-            grpInput = new GroupBox();
-            lblUser = new Label();
-            lblPass = new Label();
-            lblRole = new Label();
-            ((System.ComponentModel.ISupportInitialize)dgvUsers).BeginInit();
-            grpInput.SuspendLayout();
-            SuspendLayout();
+            this.pnlTop = new System.Windows.Forms.Panel();
+            this.btnBackTop = new System.Windows.Forms.Button();
+            this.dgvUsers = new System.Windows.Forms.DataGridView();
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.cmbRole = new System.Windows.Forms.ComboBox();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnUpdate = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnBack = new System.Windows.Forms.Button();
+            this.grpInput = new System.Windows.Forms.GroupBox();
+            this.lblUser = new System.Windows.Forms.Label();
+            this.lblPass = new System.Windows.Forms.Label();
+            this.lblRole = new System.Windows.Forms.Label();
+            this.pnlTop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsers)).BeginInit();
+            this.grpInput.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // pnlTop
+            // 
+            this.pnlTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.pnlTop.Controls.Add(this.btnBackTop);
+            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTop.Height = 50;
+            this.pnlTop.Location = new System.Drawing.Point(0, 0);
+            this.pnlTop.Name = "pnlTop";
+            this.pnlTop.Padding = new System.Windows.Forms.Padding(10);
+            this.pnlTop.Size = new System.Drawing.Size(1050, 50);
+            this.pnlTop.TabIndex = 0;
+            // 
+            // btnBackTop
+            // 
+            this.btnBackTop.BackColor = System.Drawing.Color.White;
+            this.btnBackTop.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnBackTop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBackTop.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnBackTop.Location = new System.Drawing.Point(10, 10);
+            this.btnBackTop.Name = "btnBackTop";
+            this.btnBackTop.Size = new System.Drawing.Size(180, 30);
+            this.btnBackTop.TabIndex = 0;
+            this.btnBackTop.Text = "← Back to Dashboard";
+            this.btnBackTop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnBackTop.UseVisualStyleBackColor = false;
             // 
             // dgvUsers
             // 
-            dgvUsers.AllowUserToAddRows = false;
-            dgvUsers.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvUsers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvUsers.BackgroundColor = Color.White;
-            dgvUsers.ColumnHeadersHeight = 34;
-            dgvUsers.Location = new Point(340, 20);
-            dgvUsers.Name = "dgvUsers";
-            dgvUsers.ReadOnly = true;
-            dgvUsers.RowHeadersWidth = 62;
-            dgvUsers.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsers.Size = new Size(746, 599);
-            dgvUsers.TabIndex = 1;
-            // 
-            // txtUsername
-            // 
-            txtUsername.Location = new Point(20, 58);
-            txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(250, 31);
-            txtUsername.TabIndex = 1;
-            // 
-            // txtPassword
-            // 
-            txtPassword.Location = new Point(20, 143);
-            txtPassword.Name = "txtPassword";
-            txtPassword.PasswordChar = '*';
-            txtPassword.Size = new Size(250, 31);
-            txtPassword.TabIndex = 3;
-            // 
-            // cmbRole
-            // 
-            cmbRole.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbRole.Location = new Point(20, 252);
-            cmbRole.Name = "cmbRole";
-            cmbRole.Size = new Size(250, 33);
-            cmbRole.TabIndex = 5;
-            // 
-            // btnAdd
-            // 
-            btnAdd.BackColor = Color.LightGreen;
-            btnAdd.Location = new Point(20, 292);
-            btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(80, 30);
-            btnAdd.TabIndex = 6;
-            btnAdd.Text = "Create";
-            btnAdd.UseVisualStyleBackColor = false;
-            // 
-            // btnUpdate
-            // 
-            btnUpdate.Location = new Point(105, 292);
-            btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(80, 30);
-            btnUpdate.TabIndex = 7;
-            btnUpdate.Text = "Update";
-            // 
-            // btnDelete
-            // 
-            btnDelete.BackColor = Color.LightCoral;
-            btnDelete.Location = new Point(190, 292);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(80, 30);
-            btnDelete.TabIndex = 8;
-            btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = false;
-            // 
-            // btnRefresh
-            // 
-            btnRefresh.Location = new Point(20, 332);
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(120, 30);
-            btnRefresh.TabIndex = 9;
-            btnRefresh.Text = "Refresh List";
-            // 
-            // btnBack
-            // 
-            btnBack.Location = new Point(150, 332);
-            btnBack.Name = "btnBack";
-            btnBack.Size = new Size(120, 30);
-            btnBack.TabIndex = 10;
-            btnBack.Text = "Back";
+            this.dgvUsers.AllowUserToAddRows = false;
+            this.dgvUsers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvUsers.BackgroundColor = System.Drawing.Color.White;
+            this.dgvUsers.ColumnHeadersHeight = 34;
+            this.dgvUsers.Location = new System.Drawing.Point(420, 70);
+            this.dgvUsers.Name = "dgvUsers";
+            this.dgvUsers.ReadOnly = true;
+            this.dgvUsers.RowHeadersVisible = false;
+            this.dgvUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvUsers.Size = new System.Drawing.Size(600, 610);
+            this.dgvUsers.TabIndex = 1;
+            this.dgvUsers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             // 
             // grpInput
             // 
-            grpInput.Controls.Add(lblUser);
-            grpInput.Controls.Add(txtUsername);
-            grpInput.Controls.Add(lblPass);
-            grpInput.Controls.Add(txtPassword);
-            grpInput.Controls.Add(lblRole);
-            grpInput.Controls.Add(cmbRole);
-            grpInput.Controls.Add(btnAdd);
-            grpInput.Controls.Add(btnUpdate);
-            grpInput.Controls.Add(btnDelete);
-            grpInput.Controls.Add(btnRefresh);
-            grpInput.Controls.Add(btnBack);
-            grpInput.Location = new Point(20, 20);
-            grpInput.Name = "grpInput";
-            grpInput.Size = new Size(300, 414);
-            grpInput.TabIndex = 0;
-            grpInput.TabStop = false;
-            grpInput.Text = "User Details";
-            grpInput.Enter += grpInput_Enter;
+            this.grpInput.Controls.Add(this.lblUser);
+            this.grpInput.Controls.Add(this.txtUsername);
+            this.grpInput.Controls.Add(this.lblPass);
+            this.grpInput.Controls.Add(this.txtPassword);
+            this.grpInput.Controls.Add(this.lblRole);
+            this.grpInput.Controls.Add(this.cmbRole);
+            this.grpInput.Controls.Add(this.btnAdd);
+            this.grpInput.Controls.Add(this.btnUpdate);
+            this.grpInput.Controls.Add(this.btnDelete);
+            this.grpInput.Controls.Add(this.btnRefresh);
+            this.grpInput.Location = new System.Drawing.Point(20, 70);
+            this.grpInput.Name = "grpInput";
+            this.grpInput.Size = new System.Drawing.Size(380, 420);
+            this.grpInput.TabIndex = 0;
+            this.grpInput.TabStop = false;
+            this.grpInput.Text = "User Details";
             // 
             // lblUser
             // 
-            lblUser.AutoSize = true;
-            lblUser.Location = new Point(20, 30);
-            lblUser.Name = "lblUser";
-            lblUser.Size = new Size(95, 25);
-            lblUser.TabIndex = 0;
-            lblUser.Text = "Username:";
+            this.lblUser.AutoSize = true;
+            this.lblUser.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblUser.Location = new System.Drawing.Point(20, 35);
+            this.lblUser.Name = "lblUser";
+            this.lblUser.Size = new System.Drawing.Size(120, 25);
+            this.lblUser.TabIndex = 0;
+            this.lblUser.Text = "Username:";
+            // 
+            // txtUsername
+            // 
+            this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.txtUsername.Location = new System.Drawing.Point(140, 32);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(210, 35);
+            this.txtUsername.TabIndex = 1;
             // 
             // lblPass
             // 
-            lblPass.AutoSize = true;
-            lblPass.Location = new Point(-2, 115);
-            lblPass.Name = "lblPass";
-            lblPass.Size = new Size(302, 25);
-            lblPass.TabIndex = 2;
-            lblPass.Text = "Password (leave blank if unchanged):";
+            this.lblPass.AutoSize = true;
+            this.lblPass.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblPass.Location = new System.Drawing.Point(20, 75);
+            this.lblPass.Name = "lblPass";
+            this.lblPass.Size = new System.Drawing.Size(120, 25);
+            this.lblPass.TabIndex = 2;
+            this.lblPass.Text = "Password:";
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.txtPassword.Location = new System.Drawing.Point(140, 72);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
+            this.txtPassword.Size = new System.Drawing.Size(210, 35);
+            this.txtPassword.TabIndex = 3;
+            this.txtPassword.PlaceholderText = "Leave blank if unchanged";
             // 
             // lblRole
             // 
-            lblRole.AutoSize = true;
-            lblRole.Location = new Point(20, 226);
-            lblRole.Name = "lblRole";
-            lblRole.Size = new Size(50, 25);
-            lblRole.TabIndex = 4;
-            lblRole.Text = "Role:";
+            this.lblRole.AutoSize = true;
+            this.lblRole.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblRole.Location = new System.Drawing.Point(20, 115);
+            this.lblRole.Name = "lblRole";
+            this.lblRole.Size = new System.Drawing.Size(120, 25);
+            this.lblRole.TabIndex = 4;
+            this.lblRole.Text = "Role:";
+            // 
+            // cmbRole
+            // 
+            this.cmbRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbRole.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.cmbRole.Location = new System.Drawing.Point(140, 112);
+            this.cmbRole.Name = "cmbRole";
+            this.cmbRole.Size = new System.Drawing.Size(210, 38);
+            this.cmbRole.TabIndex = 5;
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.BackColor = UITheme.SuccessColor;
+            this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdd.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnAdd.ForeColor = System.Drawing.Color.White;
+            this.btnAdd.Location = new System.Drawing.Point(20, 170);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(100, 45);
+            this.btnAdd.TabIndex = 6;
+            this.btnAdd.Text = "Create";
+            this.btnAdd.UseVisualStyleBackColor = false;
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.BackColor = UITheme.PrimaryColor;
+            this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUpdate.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnUpdate.ForeColor = System.Drawing.Color.White;
+            this.btnUpdate.Location = new System.Drawing.Point(130, 170);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(100, 45);
+            this.btnUpdate.TabIndex = 7;
+            this.btnUpdate.Text = "Update";
+            this.btnUpdate.UseVisualStyleBackColor = false;
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackColor = UITheme.DangerColor;
+            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnDelete.ForeColor = System.Drawing.Color.White;
+            this.btnDelete.Location = new System.Drawing.Point(240, 170);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(100, 45);
+            this.btnDelete.TabIndex = 8;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = false;
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.BackColor = UITheme.PrimaryColor;
+            this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnRefresh.ForeColor = System.Drawing.Color.White;
+            this.btnRefresh.Location = new System.Drawing.Point(20, 230);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(320, 45);
+            this.btnRefresh.TabIndex = 9;
+            this.btnRefresh.Text = "Refresh List";
+            this.btnRefresh.UseVisualStyleBackColor = false;
+            // 
+            // btnBack
+            // 
+            this.btnBack.BackColor = System.Drawing.Color.LightSlateGray;
+            this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBack.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnBack.ForeColor = System.Drawing.Color.White;
+            this.btnBack.Location = new System.Drawing.Point(20, 510);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(380, 50);
+            this.btnBack.TabIndex = 10;
+            this.btnBack.Text = "Back to Dashboard";
+            this.btnBack.UseVisualStyleBackColor = false;
+            this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             // 
             // FormUsers
             // 
-            ClientSize = new Size(1104, 623);
-            Controls.Add(grpInput);
-            Controls.Add(dgvUsers);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
-            Name = "FormUsers";
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "Manage Users";
-            ((System.ComponentModel.ISupportInitialize)dgvUsers).EndInit();
-            grpInput.ResumeLayout(false);
-            grpInput.PerformLayout();
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1050, 650);
+            this.Controls.Add(this.pnlTop);
+            this.Controls.Add(this.btnBack);
+            this.Controls.Add(this.grpInput);
+            this.Controls.Add(this.dgvUsers);
+            this.Name = "FormUsers";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Manage Users";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.pnlTop.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsers)).EndInit();
+            this.grpInput.ResumeLayout(false);
+            this.grpInput.PerformLayout();
+            this.ResumeLayout(false);
         }
 
         private void DgvUsers_CellClick(object? sender, DataGridViewCellEventArgs e)

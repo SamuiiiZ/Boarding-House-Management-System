@@ -35,10 +35,10 @@ C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\Board
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.genruntimeconfig.cache
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\ref\BoardingHouseSys.dll
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.Forms.FormBoarders.resources
-C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.Forms.FormPayments.resources
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.Forms.FormUsers.resources
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.csproj.GenerateResource.cache
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.Forms.FormLogin.resources
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.Forms.FormDashboard.resources
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.Forms.FormRooms.resources
 C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.Forms.FormBoarderDetails.resources
+C:\Users\ADMIN\Documents\NetBeansProjects\Boarding House Management System\BoardingHouseSys\obj\Debug\net8.0-windows\BoardingHouseSys.Forms.FormOwnerProperties.resources

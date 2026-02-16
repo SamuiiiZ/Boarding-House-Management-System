@@ -6,6 +6,7 @@ namespace BoardingHouseSys.Models
         public string? RoomNumber { get; set; }
         public int Capacity { get; set; }
         public decimal MonthlyRate { get; set; }
+        public int? BoardingHouseId { get; set; }
         public bool IsActive { get; set; }
     }
 }
