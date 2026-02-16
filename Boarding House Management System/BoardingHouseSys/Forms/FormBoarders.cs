@@ -142,6 +142,9 @@ namespace BoardingHouseSys.Forms
             this.btnRefresh.Click += (s, e) => RefreshBoarders();
             this.btnBack.Click += (s, e) => this.Close();
             this.btnClear.Click += (s, e) => { ClearFields(); HideDetailsPanel(); };
+            this.btnAdd.Click += (s, e) => AddBoarder();
+            this.btnUpdate.Click += (s, e) => UpdateBoarder();
+            this.btnDelete.Click += (s, e) => DeleteBoarder();
             this.dgvBoarders.CellClick += DgvBoarders_CellClick;
             this.btnBrowseImage.Click += BtnBrowseImage_Click;
             this.txtSearch.TextChanged += (s, e) => { _pendingSearchText = txtSearch.Text; searchTimer.Stop(); searchTimer.Start(); };
@@ -225,15 +228,15 @@ namespace BoardingHouseSys.Forms
             lblPassword = new Label();
             txtPassword = new TextBox();
             btnPanel = new FlowLayoutPanel();
+            row1 = new FlowLayoutPanel();
+            btnAdd = new Button();
+            btnUpdate = new Button();
+            btnDelete = new Button();
             row2 = new FlowLayoutPanel();
             btnClear = new Button();
             btnRefresh = new Button();
             row3 = new FlowLayoutPanel();
             btnBack = new Button();
-            row1 = new FlowLayoutPanel();
-            btnAdd = new Button();
-            btnUpdate = new Button();
-            btnDelete = new Button();
             searchTimer = new System.Windows.Forms.Timer(components);
             paymentSearchTimer = new System.Windows.Forms.Timer(components);
             pnlTop.SuspendLayout();
@@ -260,9 +263,9 @@ namespace BoardingHouseSys.Forms
             imagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picProfile).BeginInit();
             btnPanel.SuspendLayout();
+            row1.SuspendLayout();
             row2.SuspendLayout();
             row3.SuspendLayout();
-            row1.SuspendLayout();
             SuspendLayout();
             // 
             // pnlTop
@@ -271,10 +274,9 @@ namespace BoardingHouseSys.Forms
             pnlTop.Controls.Add(btnBackTop);
             pnlTop.Dock = DockStyle.Top;
             pnlTop.Location = new Point(0, 0);
-            pnlTop.Margin = new Padding(4, 5, 4, 5);
             pnlTop.Name = "pnlTop";
-            pnlTop.Padding = new Padding(14, 17, 14, 17);
-            pnlTop.Size = new Size(1714, 83);
+            pnlTop.Padding = new Padding(10);
+            pnlTop.Size = new Size(899, 50);
             pnlTop.TabIndex = 1;
             // 
             // btnBackTop
@@ -283,10 +285,9 @@ namespace BoardingHouseSys.Forms
             btnBackTop.Dock = DockStyle.Left;
             btnBackTop.FlatStyle = FlatStyle.Flat;
             btnBackTop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnBackTop.Location = new Point(14, 17);
-            btnBackTop.Margin = new Padding(4, 5, 4, 5);
+            btnBackTop.Location = new Point(10, 10);
             btnBackTop.Name = "btnBackTop";
-            btnBackTop.Size = new Size(257, 49);
+            btnBackTop.Size = new Size(180, 30);
             btnBackTop.TabIndex = 0;
             btnBackTop.Text = "← Back to Dashboard";
             btnBackTop.TextAlign = ContentAlignment.MiddleLeft;
@@ -296,8 +297,7 @@ namespace BoardingHouseSys.Forms
             // 
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.FixedPanel = FixedPanel.Panel1;
-            splitContainer1.Location = new Point(0, 83);
-            splitContainer1.Margin = new Padding(4, 5, 4, 5);
+            splitContainer1.Location = new Point(0, 50);
             splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -309,9 +309,8 @@ namespace BoardingHouseSys.Forms
             splitContainer1.Panel2.Controls.Add(inputScrollPanel);
             splitContainer1.Panel2.Controls.Add(btnPanel);
             splitContainer1.Panel2Collapsed = true;
-            splitContainer1.Size = new Size(1714, 967);
-            splitContainer1.SplitterDistance = 1000;
-            splitContainer1.SplitterWidth = 6;
+            splitContainer1.Size = new Size(899, 371);
+            splitContainer1.SplitterDistance = 700;
             splitContainer1.TabIndex = 0;
             // 
             // listPanel
@@ -319,17 +318,16 @@ namespace BoardingHouseSys.Forms
             listPanel.Controls.Add(listSplitContainer);
             listPanel.Dock = DockStyle.Fill;
             listPanel.Location = new Point(0, 0);
-            listPanel.Margin = new Padding(4, 5, 4, 5);
             listPanel.Name = "listPanel";
-            listPanel.Padding = new Padding(14, 17, 14, 17);
-            listPanel.Size = new Size(1714, 967);
+            listPanel.Padding = new Padding(10);
+            listPanel.Size = new Size(899, 371);
             listPanel.TabIndex = 0;
             // 
             // listSplitContainer
             // 
             listSplitContainer.Dock = DockStyle.Fill;
             listSplitContainer.FixedPanel = FixedPanel.Panel2;
-            listSplitContainer.Location = new Point(14, 17);
+            listSplitContainer.Location = new Point(10, 10);
             listSplitContainer.Margin = new Padding(0);
             listSplitContainer.Name = "listSplitContainer";
             listSplitContainer.Orientation = Orientation.Horizontal;
@@ -343,8 +341,9 @@ namespace BoardingHouseSys.Forms
             // 
             listSplitContainer.Panel2.Controls.Add(dgvPayments);
             listSplitContainer.Panel2.Controls.Add(pnlPaymentsHeader);
-            listSplitContainer.Size = new Size(1686, 933);
-            listSplitContainer.SplitterDistance = 560;
+            listSplitContainer.Size = new Size(879, 351);
+            listSplitContainer.SplitterDistance = 140;
+            listSplitContainer.SplitterWidth = 2;
             listSplitContainer.TabIndex = 0;
             // 
             // dgvBoarders
@@ -354,15 +353,14 @@ namespace BoardingHouseSys.Forms
             dgvBoarders.BackgroundColor = Color.White;
             dgvBoarders.ColumnHeadersHeight = 35;
             dgvBoarders.Dock = DockStyle.Fill;
-            dgvBoarders.Location = new Point(0, 70);
-            dgvBoarders.Margin = new Padding(4, 5, 4, 5);
+            dgvBoarders.Location = new Point(0, 42);
             dgvBoarders.MultiSelect = false;
             dgvBoarders.Name = "dgvBoarders";
             dgvBoarders.ReadOnly = true;
             dgvBoarders.RowHeadersVisible = false;
             dgvBoarders.RowHeadersWidth = 62;
             dgvBoarders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvBoarders.Size = new Size(1686, 490);
+            dgvBoarders.Size = new Size(879, 98);
             dgvBoarders.TabIndex = 0;
             // 
             // pnlListHeader
@@ -375,21 +373,20 @@ namespace BoardingHouseSys.Forms
             pnlListHeader.Location = new Point(0, 0);
             pnlListHeader.Margin = new Padding(0);
             pnlListHeader.Name = "pnlListHeader";
-            pnlListHeader.Padding = new Padding(10, 10, 10, 10);
-            pnlListHeader.Size = new Size(1686, 70);
+            pnlListHeader.Padding = new Padding(7, 6, 7, 6);
+            pnlListHeader.Size = new Size(879, 42);
             pnlListHeader.TabIndex = 0;
             // 
             // btnAddQuick
             // 
-            btnAddQuick.BackColor = UITheme.SuccessColor;
+            btnAddQuick.BackColor = Color.FromArgb(40, 167, 69);
             btnAddQuick.Dock = DockStyle.Right;
             btnAddQuick.FlatStyle = FlatStyle.Flat;
             btnAddQuick.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnAddQuick.ForeColor = Color.White;
-            btnAddQuick.Location = new Point(1150, 5);
-            btnAddQuick.Margin = new Padding(4, 5, 4, 5);
+            btnAddQuick.Location = new Point(500, 6);
             btnAddQuick.Name = "btnAddQuick";
-            btnAddQuick.Size = new Size(170, 50);
+            btnAddQuick.Size = new Size(119, 30);
             btnAddQuick.TabIndex = 2;
             btnAddQuick.Text = "+ Add Boarder";
             btnAddQuick.UseVisualStyleBackColor = false;
@@ -398,11 +395,11 @@ namespace BoardingHouseSys.Forms
             // 
             txtSearch.Dock = DockStyle.Right;
             txtSearch.Font = new Font("Segoe UI", 12F);
-            txtSearch.Location = new Point(1320, 5);
-            txtSearch.Margin = new Padding(10, 5, 0, 0);
+            txtSearch.Location = new Point(619, 6);
+            txtSearch.Margin = new Padding(7, 3, 0, 0);
             txtSearch.Name = "txtSearch";
             txtSearch.PlaceholderText = "Search boarders...";
-            txtSearch.Size = new Size(360, 39);
+            txtSearch.Size = new Size(253, 29);
             txtSearch.TabIndex = 1;
             // 
             // lblListTitle
@@ -410,11 +407,11 @@ namespace BoardingHouseSys.Forms
             lblListTitle.AutoSize = true;
             lblListTitle.Dock = DockStyle.Left;
             lblListTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            lblListTitle.ForeColor = UITheme.PrimaryColor;
-            lblListTitle.Location = new Point(10, 5);
-            lblListTitle.Margin = new Padding(0, 5, 20, 0);
+            lblListTitle.ForeColor = Color.FromArgb(0, 123, 255);
+            lblListTitle.Location = new Point(7, 6);
+            lblListTitle.Margin = new Padding(0, 3, 14, 0);
             lblListTitle.Name = "lblListTitle";
-            lblListTitle.Size = new Size(204, 45);
+            lblListTitle.Size = new Size(138, 30);
             lblListTitle.TabIndex = 0;
             lblListTitle.Text = "Boarder List";
             // 
@@ -425,15 +422,14 @@ namespace BoardingHouseSys.Forms
             dgvPayments.BackgroundColor = Color.White;
             dgvPayments.ColumnHeadersHeight = 35;
             dgvPayments.Dock = DockStyle.Fill;
-            dgvPayments.Location = new Point(0, 70);
-            dgvPayments.Margin = new Padding(4, 5, 4, 5);
+            dgvPayments.Location = new Point(0, 42);
             dgvPayments.MultiSelect = false;
             dgvPayments.Name = "dgvPayments";
             dgvPayments.ReadOnly = true;
             dgvPayments.RowHeadersVisible = false;
             dgvPayments.RowHeadersWidth = 62;
             dgvPayments.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPayments.Size = new Size(1686, 303);
+            dgvPayments.Size = new Size(879, 167);
             dgvPayments.TabIndex = 1;
             // 
             // pnlPaymentsHeader
@@ -446,21 +442,20 @@ namespace BoardingHouseSys.Forms
             pnlPaymentsHeader.Location = new Point(0, 0);
             pnlPaymentsHeader.Margin = new Padding(0);
             pnlPaymentsHeader.Name = "pnlPaymentsHeader";
-            pnlPaymentsHeader.Padding = new Padding(10, 10, 10, 10);
-            pnlPaymentsHeader.Size = new Size(1686, 70);
+            pnlPaymentsHeader.Padding = new Padding(7, 6, 7, 6);
+            pnlPaymentsHeader.Size = new Size(879, 42);
             pnlPaymentsHeader.TabIndex = 0;
             // 
             // btnAddPaymentQuick
             // 
-            btnAddPaymentQuick.BackColor = UITheme.SuccessColor;
+            btnAddPaymentQuick.BackColor = Color.FromArgb(40, 167, 69);
             btnAddPaymentQuick.Dock = DockStyle.Right;
             btnAddPaymentQuick.FlatStyle = FlatStyle.Flat;
             btnAddPaymentQuick.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnAddPaymentQuick.ForeColor = Color.White;
-            btnAddPaymentQuick.Location = new Point(1150, 5);
-            btnAddPaymentQuick.Margin = new Padding(4, 5, 4, 5);
+            btnAddPaymentQuick.Location = new Point(500, 6);
             btnAddPaymentQuick.Name = "btnAddPaymentQuick";
-            btnAddPaymentQuick.Size = new Size(170, 50);
+            btnAddPaymentQuick.Size = new Size(119, 30);
             btnAddPaymentQuick.TabIndex = 2;
             btnAddPaymentQuick.Text = "+ Add Payment";
             btnAddPaymentQuick.UseVisualStyleBackColor = false;
@@ -469,11 +464,11 @@ namespace BoardingHouseSys.Forms
             // 
             txtPaymentSearch.Dock = DockStyle.Right;
             txtPaymentSearch.Font = new Font("Segoe UI", 12F);
-            txtPaymentSearch.Location = new Point(1320, 5);
-            txtPaymentSearch.Margin = new Padding(10, 5, 0, 0);
+            txtPaymentSearch.Location = new Point(619, 6);
+            txtPaymentSearch.Margin = new Padding(7, 3, 0, 0);
             txtPaymentSearch.Name = "txtPaymentSearch";
             txtPaymentSearch.PlaceholderText = "Search payments...";
-            txtPaymentSearch.Size = new Size(360, 39);
+            txtPaymentSearch.Size = new Size(253, 29);
             txtPaymentSearch.TabIndex = 1;
             // 
             // lblPaymentsTitle
@@ -481,11 +476,11 @@ namespace BoardingHouseSys.Forms
             lblPaymentsTitle.AutoSize = true;
             lblPaymentsTitle.Dock = DockStyle.Left;
             lblPaymentsTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            lblPaymentsTitle.ForeColor = UITheme.PrimaryColor;
-            lblPaymentsTitle.Location = new Point(10, 5);
-            lblPaymentsTitle.Margin = new Padding(0, 5, 20, 0);
+            lblPaymentsTitle.ForeColor = Color.FromArgb(0, 123, 255);
+            lblPaymentsTitle.Location = new Point(7, 6);
+            lblPaymentsTitle.Margin = new Padding(0, 3, 14, 0);
             lblPaymentsTitle.Name = "lblPaymentsTitle";
-            lblPaymentsTitle.Size = new Size(168, 45);
+            lblPaymentsTitle.Size = new Size(114, 30);
             lblPaymentsTitle.TabIndex = 0;
             lblPaymentsTitle.Text = "Payments";
             // 
@@ -496,10 +491,9 @@ namespace BoardingHouseSys.Forms
             inputScrollPanel.Controls.Add(grpInput);
             inputScrollPanel.Dock = DockStyle.Fill;
             inputScrollPanel.Location = new Point(0, 0);
-            inputScrollPanel.Margin = new Padding(4, 5, 4, 5);
             inputScrollPanel.Name = "inputScrollPanel";
-            inputScrollPanel.Padding = new Padding(14, 17, 14, 17);
-            inputScrollPanel.Size = new Size(700, 967);
+            inputScrollPanel.Padding = new Padding(10);
+            inputScrollPanel.Size = new Size(96, 0);
             inputScrollPanel.TabIndex = 0;
             // 
             // grpPayments
@@ -508,11 +502,11 @@ namespace BoardingHouseSys.Forms
             grpPayments.Controls.Add(paymentLayout);
             grpPayments.Dock = DockStyle.Top;
             grpPayments.Font = new Font("Segoe UI", 10F);
-            grpPayments.Location = new Point(14, 639);
-            grpPayments.Margin = new Padding(4, 12, 4, 5);
+            grpPayments.Location = new Point(10, 409);
+            grpPayments.Margin = new Padding(3, 7, 3, 3);
             grpPayments.Name = "grpPayments";
-            grpPayments.Padding = new Padding(14, 17, 14, 17);
-            grpPayments.Size = new Size(650, 400);
+            grpPayments.Padding = new Padding(10);
+            grpPayments.Size = new Size(76, 252);
             grpPayments.TabIndex = 1;
             grpPayments.TabStop = false;
             grpPayments.Text = "Payments";
@@ -535,18 +529,17 @@ namespace BoardingHouseSys.Forms
             paymentLayout.Controls.Add(txtPaymentNotes, 1, 4);
             paymentLayout.Controls.Add(paymentButtonPanel, 0, 5);
             paymentLayout.Dock = DockStyle.Fill;
-            paymentLayout.Location = new Point(14, 44);
-            paymentLayout.Margin = new Padding(4, 5, 4, 5);
+            paymentLayout.Location = new Point(10, 28);
             paymentLayout.Name = "paymentLayout";
-            paymentLayout.Padding = new Padding(7, 8, 7, 8);
+            paymentLayout.Padding = new Padding(5);
             paymentLayout.RowCount = 6;
-            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 95F));
-            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 65F));
-            paymentLayout.Size = new Size(550, 350);
+            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 57F));
+            paymentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 39F));
+            paymentLayout.Size = new Size(56, 214);
             paymentLayout.TabIndex = 0;
             // 
             // lblPaymentAmount
@@ -554,20 +547,18 @@ namespace BoardingHouseSys.Forms
             lblPaymentAmount.Anchor = AnchorStyles.Left;
             lblPaymentAmount.AutoSize = true;
             lblPaymentAmount.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPaymentAmount.Location = new Point(11, 14);
-            lblPaymentAmount.Margin = new Padding(4, 0, 4, 0);
+            lblPaymentAmount.Location = new Point(8, 5);
             lblPaymentAmount.Name = "lblPaymentAmount";
-            lblPaymentAmount.Size = new Size(130, 28);
+            lblPaymentAmount.Size = new Size(10, 27);
             lblPaymentAmount.TabIndex = 0;
             lblPaymentAmount.Text = "Amount:";
             // 
             // txtPaymentAmount
             // 
             txtPaymentAmount.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtPaymentAmount.Location = new Point(150, 13);
-            txtPaymentAmount.Margin = new Padding(4, 5, 4, 5);
+            txtPaymentAmount.Location = new Point(24, 8);
             txtPaymentAmount.Name = "txtPaymentAmount";
-            txtPaymentAmount.Size = new Size(230, 34);
+            txtPaymentAmount.Size = new Size(24, 25);
             txtPaymentAmount.TabIndex = 1;
             // 
             // lblPaymentMonth
@@ -575,10 +566,9 @@ namespace BoardingHouseSys.Forms
             lblPaymentMonth.Anchor = AnchorStyles.Left;
             lblPaymentMonth.AutoSize = true;
             lblPaymentMonth.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPaymentMonth.Location = new Point(11, 54);
-            lblPaymentMonth.Margin = new Padding(4, 0, 4, 0);
+            lblPaymentMonth.Location = new Point(8, 32);
             lblPaymentMonth.Name = "lblPaymentMonth";
-            lblPaymentMonth.Size = new Size(130, 28);
+            lblPaymentMonth.Size = new Size(10, 27);
             lblPaymentMonth.TabIndex = 2;
             lblPaymentMonth.Text = "Month:";
             // 
@@ -586,10 +576,9 @@ namespace BoardingHouseSys.Forms
             // 
             cmbPaymentMonth.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             cmbPaymentMonth.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbPaymentMonth.Location = new Point(150, 53);
-            cmbPaymentMonth.Margin = new Padding(4, 5, 4, 5);
+            cmbPaymentMonth.Location = new Point(24, 35);
             cmbPaymentMonth.Name = "cmbPaymentMonth";
-            cmbPaymentMonth.Size = new Size(230, 36);
+            cmbPaymentMonth.Size = new Size(24, 25);
             cmbPaymentMonth.TabIndex = 3;
             // 
             // lblPaymentYear
@@ -597,22 +586,20 @@ namespace BoardingHouseSys.Forms
             lblPaymentYear.Anchor = AnchorStyles.Left;
             lblPaymentYear.AutoSize = true;
             lblPaymentYear.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPaymentYear.Location = new Point(11, 94);
-            lblPaymentYear.Margin = new Padding(4, 0, 4, 0);
+            lblPaymentYear.Location = new Point(8, 59);
             lblPaymentYear.Name = "lblPaymentYear";
-            lblPaymentYear.Size = new Size(130, 28);
+            lblPaymentYear.Size = new Size(10, 27);
             lblPaymentYear.TabIndex = 4;
             lblPaymentYear.Text = "Year:";
             // 
             // numPaymentYear
             // 
             numPaymentYear.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numPaymentYear.Location = new Point(150, 93);
-            numPaymentYear.Margin = new Padding(4, 5, 4, 5);
+            numPaymentYear.Location = new Point(24, 62);
             numPaymentYear.Maximum = new decimal(new int[] { 2100, 0, 0, 0 });
             numPaymentYear.Minimum = new decimal(new int[] { 2000, 0, 0, 0 });
             numPaymentYear.Name = "numPaymentYear";
-            numPaymentYear.Size = new Size(230, 34);
+            numPaymentYear.Size = new Size(24, 25);
             numPaymentYear.TabIndex = 5;
             numPaymentYear.Value = new decimal(new int[] { 2024, 0, 0, 0 });
             // 
@@ -621,10 +608,9 @@ namespace BoardingHouseSys.Forms
             lblPaymentStatus.Anchor = AnchorStyles.Left;
             lblPaymentStatus.AutoSize = true;
             lblPaymentStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPaymentStatus.Location = new Point(11, 134);
-            lblPaymentStatus.Margin = new Padding(4, 0, 4, 0);
+            lblPaymentStatus.Location = new Point(8, 86);
             lblPaymentStatus.Name = "lblPaymentStatus";
-            lblPaymentStatus.Size = new Size(130, 28);
+            lblPaymentStatus.Size = new Size(10, 27);
             lblPaymentStatus.TabIndex = 6;
             lblPaymentStatus.Text = "Status:";
             // 
@@ -632,10 +618,9 @@ namespace BoardingHouseSys.Forms
             // 
             cmbPaymentStatus.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             cmbPaymentStatus.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbPaymentStatus.Location = new Point(150, 133);
-            cmbPaymentStatus.Margin = new Padding(4, 5, 4, 5);
+            cmbPaymentStatus.Location = new Point(24, 89);
             cmbPaymentStatus.Name = "cmbPaymentStatus";
-            cmbPaymentStatus.Size = new Size(230, 36);
+            cmbPaymentStatus.Size = new Size(24, 25);
             cmbPaymentStatus.TabIndex = 7;
             // 
             // lblPaymentNotes
@@ -643,21 +628,19 @@ namespace BoardingHouseSys.Forms
             lblPaymentNotes.Anchor = AnchorStyles.Left;
             lblPaymentNotes.AutoSize = true;
             lblPaymentNotes.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPaymentNotes.Location = new Point(11, 182);
-            lblPaymentNotes.Margin = new Padding(4, 0, 4, 0);
+            lblPaymentNotes.Location = new Point(8, 113);
             lblPaymentNotes.Name = "lblPaymentNotes";
-            lblPaymentNotes.Size = new Size(130, 28);
+            lblPaymentNotes.Size = new Size(10, 57);
             lblPaymentNotes.TabIndex = 8;
             lblPaymentNotes.Text = "Notes:";
             // 
             // txtPaymentNotes
             // 
             txtPaymentNotes.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtPaymentNotes.Location = new Point(150, 177);
-            txtPaymentNotes.Margin = new Padding(4, 5, 4, 5);
+            txtPaymentNotes.Location = new Point(24, 116);
             txtPaymentNotes.Multiline = true;
             txtPaymentNotes.Name = "txtPaymentNotes";
-            txtPaymentNotes.Size = new Size(230, 85);
+            txtPaymentNotes.Size = new Size(24, 51);
             txtPaymentNotes.TabIndex = 9;
             // 
             // paymentButtonPanel
@@ -669,64 +652,60 @@ namespace BoardingHouseSys.Forms
             paymentButtonPanel.Controls.Add(btnPaymentDelete);
             paymentButtonPanel.Controls.Add(btnPaymentClear);
             paymentButtonPanel.Dock = DockStyle.Fill;
-            paymentButtonPanel.Location = new Point(7, 266);
-            paymentButtonPanel.Margin = new Padding(0, 8, 0, 0);
+            paymentButtonPanel.Location = new Point(5, 175);
+            paymentButtonPanel.Margin = new Padding(0, 5, 0, 0);
             paymentButtonPanel.Name = "paymentButtonPanel";
-            paymentButtonPanel.Size = new Size(500, 47);
+            paymentButtonPanel.Size = new Size(46, 34);
             paymentButtonPanel.TabIndex = 10;
             // 
             // btnPaymentAdd
             // 
-            btnPaymentAdd.BackColor = UITheme.SuccessColor;
+            btnPaymentAdd.BackColor = Color.FromArgb(40, 167, 69);
             btnPaymentAdd.FlatStyle = FlatStyle.Flat;
             btnPaymentAdd.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnPaymentAdd.ForeColor = Color.White;
-            btnPaymentAdd.Location = new Point(4, 5);
-            btnPaymentAdd.Margin = new Padding(4, 5, 4, 5);
+            btnPaymentAdd.Location = new Point(3, 3);
             btnPaymentAdd.Name = "btnPaymentAdd";
-            btnPaymentAdd.Size = new Size(110, 40);
+            btnPaymentAdd.Size = new Size(77, 24);
             btnPaymentAdd.TabIndex = 0;
             btnPaymentAdd.Text = "Add";
             btnPaymentAdd.UseVisualStyleBackColor = false;
             // 
             // btnPaymentUpdate
             // 
-            btnPaymentUpdate.BackColor = UITheme.PrimaryColor;
+            btnPaymentUpdate.BackColor = Color.FromArgb(0, 123, 255);
             btnPaymentUpdate.FlatStyle = FlatStyle.Flat;
             btnPaymentUpdate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnPaymentUpdate.ForeColor = Color.White;
-            btnPaymentUpdate.Location = new Point(122, 5);
-            btnPaymentUpdate.Margin = new Padding(4, 5, 4, 5);
+            btnPaymentUpdate.Location = new Point(3, 33);
             btnPaymentUpdate.Name = "btnPaymentUpdate";
-            btnPaymentUpdate.Size = new Size(110, 40);
+            btnPaymentUpdate.Size = new Size(77, 24);
             btnPaymentUpdate.TabIndex = 1;
             btnPaymentUpdate.Text = "Update";
             btnPaymentUpdate.UseVisualStyleBackColor = false;
             // 
             // btnPaymentDelete
             // 
-            btnPaymentDelete.BackColor = UITheme.DangerColor;
+            btnPaymentDelete.BackColor = Color.FromArgb(220, 53, 69);
             btnPaymentDelete.FlatStyle = FlatStyle.Flat;
             btnPaymentDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnPaymentDelete.ForeColor = Color.White;
-            btnPaymentDelete.Location = new Point(240, 5);
-            btnPaymentDelete.Margin = new Padding(4, 5, 4, 5);
+            btnPaymentDelete.Location = new Point(3, 63);
             btnPaymentDelete.Name = "btnPaymentDelete";
-            btnPaymentDelete.Size = new Size(110, 40);
+            btnPaymentDelete.Size = new Size(77, 24);
             btnPaymentDelete.TabIndex = 2;
             btnPaymentDelete.Text = "Delete";
             btnPaymentDelete.UseVisualStyleBackColor = false;
             // 
             // btnPaymentClear
             // 
-            btnPaymentClear.BackColor = UITheme.PrimaryColor;
+            btnPaymentClear.BackColor = Color.FromArgb(0, 123, 255);
             btnPaymentClear.FlatStyle = FlatStyle.Flat;
             btnPaymentClear.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnPaymentClear.ForeColor = Color.White;
-            btnPaymentClear.Location = new Point(358, 5);
-            btnPaymentClear.Margin = new Padding(4, 5, 4, 5);
+            btnPaymentClear.Location = new Point(3, 93);
             btnPaymentClear.Name = "btnPaymentClear";
-            btnPaymentClear.Size = new Size(110, 40);
+            btnPaymentClear.Size = new Size(77, 24);
             btnPaymentClear.TabIndex = 3;
             btnPaymentClear.Text = "Clear";
             btnPaymentClear.UseVisualStyleBackColor = false;
@@ -737,11 +716,10 @@ namespace BoardingHouseSys.Forms
             grpInput.Controls.Add(inputLayout);
             grpInput.Dock = DockStyle.Top;
             grpInput.Font = new Font("Segoe UI", 10F);
-            grpInput.Location = new Point(14, 17);
-            grpInput.Margin = new Padding(4, 5, 4, 5);
+            grpInput.Location = new Point(10, 10);
             grpInput.Name = "grpInput";
-            grpInput.Padding = new Padding(14, 17, 14, 17);
-            grpInput.Size = new Size(650, 622);
+            grpInput.Padding = new Padding(10);
+            grpInput.Size = new Size(76, 399);
             grpInput.TabIndex = 0;
             grpInput.TabStop = false;
             grpInput.Text = "Boarder Details";
@@ -770,21 +748,20 @@ namespace BoardingHouseSys.Forms
             inputLayout.Controls.Add(lblPassword, 0, 8);
             inputLayout.Controls.Add(txtPassword, 1, 8);
             inputLayout.Dock = DockStyle.Fill;
-            inputLayout.Location = new Point(14, 44);
-            inputLayout.Margin = new Padding(4, 5, 4, 5);
+            inputLayout.Location = new Point(10, 28);
             inputLayout.Name = "inputLayout";
-            inputLayout.Padding = new Padding(7, 8, 7, 8);
+            inputLayout.Padding = new Padding(5);
             inputLayout.RowCount = 9;
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 230F));
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            inputLayout.Size = new Size(620, 600);
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 138F));
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
+            inputLayout.Size = new Size(56, 361);
             inputLayout.TabIndex = 0;
             // 
             // lblPhoto
@@ -792,10 +769,9 @@ namespace BoardingHouseSys.Forms
             lblPhoto.Anchor = AnchorStyles.Left;
             lblPhoto.AutoSize = true;
             lblPhoto.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPhoto.Location = new Point(11, 109);
-            lblPhoto.Margin = new Padding(4, 0, 4, 0);
+            lblPhoto.Location = new Point(8, 5);
             lblPhoto.Name = "lblPhoto";
-            lblPhoto.Size = new Size(150, 28);
+            lblPhoto.Size = new Size(10, 138);
             lblPhoto.TabIndex = 0;
             lblPhoto.Text = "Profile Photo:";
             // 
@@ -805,33 +781,31 @@ namespace BoardingHouseSys.Forms
             imagePanel.Controls.Add(picProfile);
             imagePanel.Controls.Add(btnBrowseImage);
             imagePanel.FlowDirection = FlowDirection.TopDown;
-            imagePanel.Location = new Point(220, 13);
-            imagePanel.Margin = new Padding(4, 5, 4, 5);
+            imagePanel.Location = new Point(24, 8);
             imagePanel.Name = "imagePanel";
-            imagePanel.Size = new Size(200, 209);
+            imagePanel.Size = new Size(24, 126);
             imagePanel.TabIndex = 1;
             // 
             // picProfile
             // 
             picProfile.BorderStyle = BorderStyle.FixedSingle;
-            picProfile.Location = new Point(4, 5);
-            picProfile.Margin = new Padding(4, 5, 4, 5);
+            picProfile.Location = new Point(3, 3);
             picProfile.Name = "picProfile";
-            picProfile.Size = new Size(171, 199);
+            picProfile.Size = new Size(120, 120);
             picProfile.SizeMode = PictureBoxSizeMode.Zoom;
             picProfile.TabIndex = 0;
             picProfile.TabStop = false;
             // 
             // btnBrowseImage
             // 
-            btnBrowseImage.BackColor = UITheme.PrimaryColor;
+            btnBrowseImage.BackColor = Color.FromArgb(0, 123, 255);
             btnBrowseImage.FlatStyle = FlatStyle.Flat;
             btnBrowseImage.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnBrowseImage.ForeColor = Color.White;
-            btnBrowseImage.Location = new Point(183, 5);
-            btnBrowseImage.Margin = new Padding(4, 5, 4, 5);
+            btnBrowseImage.Location = new Point(129, 6);
+            btnBrowseImage.Margin = new Padding(3, 6, 3, 3);
             btnBrowseImage.Name = "btnBrowseImage";
-            btnBrowseImage.Size = new Size(137, 40);
+            btnBrowseImage.Size = new Size(96, 24);
             btnBrowseImage.TabIndex = 1;
             btnBrowseImage.Text = "Upload Photo";
             btnBrowseImage.UseVisualStyleBackColor = false;
@@ -839,20 +813,18 @@ namespace BoardingHouseSys.Forms
             // lblFullName
             // 
             lblFullName.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblFullName.Location = new Point(11, 246);
-            lblFullName.Margin = new Padding(4, 0, 4, 0);
+            lblFullName.Location = new Point(8, 143);
             lblFullName.Name = "lblFullName";
-            lblFullName.Size = new Size(130, 28);
+            lblFullName.Size = new Size(1, 17);
             lblFullName.TabIndex = 2;
             lblFullName.Text = "Full Name:";
             // 
             // txtFullName
             // 
             txtFullName.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtFullName.Location = new Point(220, 243);
-            txtFullName.Margin = new Padding(4, 5, 4, 5);
+            txtFullName.Location = new Point(24, 146);
             txtFullName.Name = "txtFullName";
-            txtFullName.Size = new Size(389, 34);
+            txtFullName.Size = new Size(24, 25);
             txtFullName.TabIndex = 3;
             // 
             // lblAddress
@@ -860,20 +832,18 @@ namespace BoardingHouseSys.Forms
             lblAddress.Anchor = AnchorStyles.Left;
             lblAddress.AutoSize = true;
             lblAddress.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblAddress.Location = new Point(11, 284);
-            lblAddress.Margin = new Padding(4, 0, 4, 0);
+            lblAddress.Location = new Point(8, 170);
             lblAddress.Name = "lblAddress";
-            lblAddress.Size = new Size(150, 28);
+            lblAddress.Size = new Size(10, 27);
             lblAddress.TabIndex = 4;
             lblAddress.Text = "Address:";
             // 
             // txtAddress
             // 
             txtAddress.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtAddress.Location = new Point(220, 283);
-            txtAddress.Margin = new Padding(4, 5, 4, 5);
+            txtAddress.Location = new Point(24, 173);
             txtAddress.Name = "txtAddress";
-            txtAddress.Size = new Size(389, 34);
+            txtAddress.Size = new Size(24, 25);
             txtAddress.TabIndex = 5;
             // 
             // lblPhone
@@ -881,20 +851,18 @@ namespace BoardingHouseSys.Forms
             lblPhone.Anchor = AnchorStyles.Left;
             lblPhone.AutoSize = true;
             lblPhone.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPhone.Location = new Point(11, 324);
-            lblPhone.Margin = new Padding(4, 0, 4, 0);
+            lblPhone.Location = new Point(8, 197);
             lblPhone.Name = "lblPhone";
-            lblPhone.Size = new Size(150, 28);
+            lblPhone.Size = new Size(10, 27);
             lblPhone.TabIndex = 6;
             lblPhone.Text = "Phone:";
             // 
             // txtPhone
             // 
             txtPhone.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtPhone.Location = new Point(220, 323);
-            txtPhone.Margin = new Padding(4, 5, 4, 5);
+            txtPhone.Location = new Point(24, 200);
             txtPhone.Name = "txtPhone";
-            txtPhone.Size = new Size(389, 34);
+            txtPhone.Size = new Size(24, 25);
             txtPhone.TabIndex = 7;
             // 
             // lblRoom
@@ -902,10 +870,9 @@ namespace BoardingHouseSys.Forms
             lblRoom.Anchor = AnchorStyles.Left;
             lblRoom.AutoSize = true;
             lblRoom.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblRoom.Location = new Point(11, 364);
-            lblRoom.Margin = new Padding(4, 0, 4, 0);
+            lblRoom.Location = new Point(8, 224);
             lblRoom.Name = "lblRoom";
-            lblRoom.Size = new Size(150, 28);
+            lblRoom.Size = new Size(10, 27);
             lblRoom.TabIndex = 8;
             lblRoom.Text = "Room:";
             // 
@@ -913,10 +880,9 @@ namespace BoardingHouseSys.Forms
             // 
             cmbRooms.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             cmbRooms.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbRooms.Location = new Point(220, 363);
-            cmbRooms.Margin = new Padding(4, 5, 4, 5);
+            cmbRooms.Location = new Point(24, 227);
             cmbRooms.Name = "cmbRooms";
-            cmbRooms.Size = new Size(389, 36);
+            cmbRooms.Size = new Size(24, 25);
             cmbRooms.TabIndex = 9;
             // 
             // lblBoardingHouse
@@ -924,10 +890,9 @@ namespace BoardingHouseSys.Forms
             lblBoardingHouse.Anchor = AnchorStyles.Left;
             lblBoardingHouse.AutoSize = true;
             lblBoardingHouse.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblBoardingHouse.Location = new Point(11, 404);
-            lblBoardingHouse.Margin = new Padding(4, 0, 4, 0);
+            lblBoardingHouse.Location = new Point(8, 251);
             lblBoardingHouse.Name = "lblBoardingHouse";
-            lblBoardingHouse.Size = new Size(160, 28);
+            lblBoardingHouse.Size = new Size(10, 27);
             lblBoardingHouse.TabIndex = 10;
             lblBoardingHouse.Text = "Boarding House:";
             // 
@@ -935,20 +900,18 @@ namespace BoardingHouseSys.Forms
             // 
             cmbBoardingHouses.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             cmbBoardingHouses.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbBoardingHouses.Location = new Point(220, 403);
-            cmbBoardingHouses.Margin = new Padding(4, 5, 4, 5);
+            cmbBoardingHouses.Location = new Point(24, 254);
             cmbBoardingHouses.Name = "cmbBoardingHouses";
-            cmbBoardingHouses.Size = new Size(389, 36);
+            cmbBoardingHouses.Size = new Size(24, 25);
             cmbBoardingHouses.TabIndex = 11;
             // 
             // chkCreateAccount
             // 
             chkCreateAccount.AutoSize = true;
             chkCreateAccount.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            chkCreateAccount.Location = new Point(220, 443);
-            chkCreateAccount.Margin = new Padding(4, 5, 4, 5);
+            chkCreateAccount.Location = new Point(24, 281);
             chkCreateAccount.Name = "chkCreateAccount";
-            chkCreateAccount.Size = new Size(223, 32);
+            chkCreateAccount.Size = new Size(24, 18);
             chkCreateAccount.TabIndex = 12;
             chkCreateAccount.Text = "Create Login Account";
             // 
@@ -957,10 +920,9 @@ namespace BoardingHouseSys.Forms
             lblUsername.Anchor = AnchorStyles.Left;
             lblUsername.AutoSize = true;
             lblUsername.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblUsername.Location = new Point(11, 479);
-            lblUsername.Margin = new Padding(4, 0, 4, 0);
+            lblUsername.Location = new Point(8, 302);
             lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(150, 28);
+            lblUsername.Size = new Size(10, 27);
             lblUsername.TabIndex = 13;
             lblUsername.Text = "Username:";
             // 
@@ -968,10 +930,9 @@ namespace BoardingHouseSys.Forms
             // 
             txtUsername.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtUsername.Enabled = false;
-            txtUsername.Location = new Point(220, 478);
-            txtUsername.Margin = new Padding(4, 5, 4, 5);
+            txtUsername.Location = new Point(24, 305);
             txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(389, 34);
+            txtUsername.Size = new Size(24, 25);
             txtUsername.TabIndex = 14;
             // 
             // lblPassword
@@ -979,10 +940,9 @@ namespace BoardingHouseSys.Forms
             lblPassword.Anchor = AnchorStyles.Left;
             lblPassword.AutoSize = true;
             lblPassword.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPassword.Location = new Point(11, 519);
-            lblPassword.Margin = new Padding(4, 0, 4, 0);
+            lblPassword.Location = new Point(8, 329);
             lblPassword.Name = "lblPassword";
-            lblPassword.Size = new Size(150, 28);
+            lblPassword.Size = new Size(10, 27);
             lblPassword.TabIndex = 15;
             lblPassword.Text = "Password:";
             // 
@@ -990,11 +950,10 @@ namespace BoardingHouseSys.Forms
             // 
             txtPassword.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtPassword.Enabled = false;
-            txtPassword.Location = new Point(220, 518);
-            txtPassword.Margin = new Padding(4, 5, 4, 5);
+            txtPassword.Location = new Point(24, 332);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
-            txtPassword.Size = new Size(389, 34);
+            txtPassword.Size = new Size(24, 25);
             txtPassword.TabIndex = 16;
             // 
             // btnPanel
@@ -1004,49 +963,96 @@ namespace BoardingHouseSys.Forms
             btnPanel.Controls.Add(row3);
             btnPanel.Dock = DockStyle.Bottom;
             btnPanel.FlowDirection = FlowDirection.TopDown;
-            btnPanel.Location = new Point(0, 0);
-            btnPanel.Margin = new Padding(4, 5, 4, 5);
+            btnPanel.Location = new Point(0, -38);
             btnPanel.Name = "btnPanel";
-            btnPanel.Padding = new Padding(14, 8, 14, 8);
-            btnPanel.Size = new Size(700, 230);
+            btnPanel.Padding = new Padding(10, 5, 10, 5);
+            btnPanel.Size = new Size(96, 138);
             btnPanel.TabIndex = 1;
             btnPanel.WrapContents = false;
+            // 
+            // row1
+            // 
+            row1.AutoSize = true;
+            row1.Controls.Add(btnAdd);
+            row1.Controls.Add(btnUpdate);
+            row1.Controls.Add(btnDelete);
+            row1.Location = new Point(13, 8);
+            row1.Name = "row1";
+            row1.Size = new Size(172, 82);
+            row1.TabIndex = 0;
+            // 
+            // btnAdd
+            // 
+            btnAdd.BackColor = Color.FromArgb(40, 167, 69);
+            btnAdd.FlatStyle = FlatStyle.Flat;
+            btnAdd.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnAdd.ForeColor = Color.White;
+            btnAdd.Location = new Point(3, 3);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(80, 35);
+            btnAdd.TabIndex = 0;
+            btnAdd.Text = "Add";
+            btnAdd.UseVisualStyleBackColor = false;
+            // 
+            // btnUpdate
+            // 
+            btnUpdate.BackColor = Color.FromArgb(0, 123, 255);
+            btnUpdate.FlatStyle = FlatStyle.Flat;
+            btnUpdate.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnUpdate.ForeColor = Color.White;
+            btnUpdate.Location = new Point(89, 3);
+            btnUpdate.Name = "btnUpdate";
+            btnUpdate.Size = new Size(80, 35);
+            btnUpdate.TabIndex = 1;
+            btnUpdate.Text = "Update";
+            btnUpdate.UseVisualStyleBackColor = false;
+            // 
+            // btnDelete
+            // 
+            btnDelete.BackColor = Color.FromArgb(220, 53, 69);
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnDelete.ForeColor = Color.White;
+            btnDelete.Location = new Point(3, 44);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(80, 35);
+            btnDelete.TabIndex = 2;
+            btnDelete.Text = "Delete";
+            btnDelete.UseVisualStyleBackColor = false;
             // 
             // row2
             // 
             row2.AutoSize = true;
             row2.Controls.Add(btnClear);
             row2.Controls.Add(btnRefresh);
-            row2.Location = new Point(7, 16);
-            row2.Margin = new Padding(0, 8, 0, 0);
+            row2.Location = new Point(10, 98);
+            row2.Margin = new Padding(0, 5, 0, 0);
             row2.Name = "row2";
-            row2.Size = new Size(358, 60);
+            row2.Size = new Size(252, 36);
             row2.TabIndex = 1;
             // 
             // btnClear
             // 
-            btnClear.BackColor = UITheme.PrimaryColor;
+            btnClear.BackColor = Color.FromArgb(0, 123, 255);
             btnClear.FlatStyle = FlatStyle.Flat;
             btnClear.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnClear.ForeColor = Color.White;
-            btnClear.Location = new Point(4, 5);
-            btnClear.Margin = new Padding(4, 5, 4, 5);
+            btnClear.Location = new Point(3, 3);
             btnClear.Name = "btnClear";
-            btnClear.Size = new Size(171, 50);
+            btnClear.Size = new Size(120, 30);
             btnClear.TabIndex = 0;
             btnClear.Text = "Clear Fields";
             btnClear.UseVisualStyleBackColor = false;
             // 
             // btnRefresh
             // 
-            btnRefresh.BackColor = UITheme.PrimaryColor;
+            btnRefresh.BackColor = Color.FromArgb(0, 123, 255);
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnRefresh.ForeColor = Color.White;
-            btnRefresh.Location = new Point(183, 5);
-            btnRefresh.Margin = new Padding(4, 5, 4, 5);
+            btnRefresh.Location = new Point(129, 3);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(171, 50);
+            btnRefresh.Size = new Size(120, 30);
             btnRefresh.TabIndex = 1;
             btnRefresh.Text = "Refresh List";
             btnRefresh.UseVisualStyleBackColor = false;
@@ -1055,10 +1061,10 @@ namespace BoardingHouseSys.Forms
             // 
             row3.AutoSize = true;
             row3.Controls.Add(btnBack);
-            row3.Location = new Point(7, 93);
-            row3.Margin = new Padding(0, 17, 0, 0);
+            row3.Location = new Point(10, 144);
+            row3.Margin = new Padding(0, 10, 0, 0);
             row3.Name = "row3";
-            row3.Size = new Size(365, 68);
+            row3.Size = new Size(256, 41);
             row3.TabIndex = 2;
             // 
             // btnBack
@@ -1067,67 +1073,12 @@ namespace BoardingHouseSys.Forms
             btnBack.FlatStyle = FlatStyle.Flat;
             btnBack.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnBack.ForeColor = Color.White;
-            btnBack.Location = new Point(4, 5);
-            btnBack.Margin = new Padding(4, 5, 4, 5);
+            btnBack.Location = new Point(3, 3);
             btnBack.Name = "btnBack";
-            btnBack.Size = new Size(357, 58);
+            btnBack.Size = new Size(250, 35);
             btnBack.TabIndex = 0;
             btnBack.Text = "Back to Dashboard";
             btnBack.UseVisualStyleBackColor = false;
-            // 
-            // row1
-            // 
-            row1.AutoSize = true;
-            row1.Controls.Add(btnAdd);
-            row1.Controls.Add(btnUpdate);
-            row1.Controls.Add(btnDelete);
-            row1.Location = new Point(11, 13);
-            row1.Margin = new Padding(4, 5, 4, 5);
-            row1.Name = "row1";
-            row1.Size = new Size(380, 68);
-            row1.TabIndex = 0;
-            // 
-            // btnAdd
-            // 
-            btnAdd.BackColor = UITheme.SuccessColor;
-            btnAdd.FlatStyle = FlatStyle.Flat;
-            btnAdd.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnAdd.ForeColor = Color.White;
-            btnAdd.Location = new Point(4, 5);
-            btnAdd.Margin = new Padding(4, 5, 4, 5);
-            btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(115, 58);
-            btnAdd.TabIndex = 0;
-            btnAdd.Text = "Add";
-            btnAdd.UseVisualStyleBackColor = false;
-            // 
-            // btnUpdate
-            // 
-            btnUpdate.BackColor = UITheme.PrimaryColor;
-            btnUpdate.FlatStyle = FlatStyle.Flat;
-            btnUpdate.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnUpdate.ForeColor = Color.White;
-            btnUpdate.Location = new Point(127, 5);
-            btnUpdate.Margin = new Padding(4, 5, 4, 5);
-            btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(115, 58);
-            btnUpdate.TabIndex = 1;
-            btnUpdate.Text = "Update";
-            btnUpdate.UseVisualStyleBackColor = false;
-            // 
-            // btnDelete
-            // 
-            btnDelete.BackColor = UITheme.DangerColor;
-            btnDelete.FlatStyle = FlatStyle.Flat;
-            btnDelete.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnDelete.ForeColor = Color.White;
-            btnDelete.Location = new Point(250, 5);
-            btnDelete.Margin = new Padding(4, 5, 4, 5);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(115, 58);
-            btnDelete.TabIndex = 2;
-            btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = false;
             // 
             // searchTimer
             // 
@@ -1139,13 +1090,12 @@ namespace BoardingHouseSys.Forms
             // 
             // FormBoarders
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.WhiteSmoke;
-            ClientSize = new Size(1714, 1050);
+            ClientSize = new Size(899, 421);
             Controls.Add(splitContainer1);
             Controls.Add(pnlTop);
-            Margin = new Padding(4, 5, 4, 5);
             Name = "FormBoarders";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Manage Boarders";
@@ -1182,9 +1132,9 @@ namespace BoardingHouseSys.Forms
             ((System.ComponentModel.ISupportInitialize)picProfile).EndInit();
             btnPanel.ResumeLayout(false);
             btnPanel.PerformLayout();
+            row1.ResumeLayout(false);
             row2.ResumeLayout(false);
             row3.ResumeLayout(false);
-            row1.ResumeLayout(false);
             ResumeLayout(false);
         }
 

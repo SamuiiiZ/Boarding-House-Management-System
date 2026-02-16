@@ -16,7 +16,7 @@ namespace BoardingHouseSys.Forms
         private RoomRepository _repository;
         private BoardingHouseRepository _boardingHouseRepo;
         private User _currentUser;
-        
+
         // UI Controls
         private System.ComponentModel.IContainer? components = null;
         private System.Windows.Forms.Panel pnlTop;
@@ -66,7 +66,7 @@ namespace BoardingHouseSys.Forms
             _repository = new RoomRepository();
             _boardingHouseRepo = new BoardingHouseRepository();
             _currentUser = user;
-            
+
             this.Load += (s, e) =>
             {
                 ApplyAccessRules();
@@ -122,10 +122,9 @@ namespace BoardingHouseSys.Forms
             pnlTop.Controls.Add(btnBackTop);
             pnlTop.Dock = DockStyle.Top;
             pnlTop.Location = new Point(0, 0);
-            pnlTop.Margin = new Padding(4, 5, 4, 5);
             pnlTop.Name = "pnlTop";
-            pnlTop.Padding = new Padding(14, 17, 14, 17);
-            pnlTop.Size = new Size(1500, 83);
+            pnlTop.Padding = new Padding(10);
+            pnlTop.Size = new Size(1284, 50);
             pnlTop.TabIndex = 0;
             // 
             // btnBackTop
@@ -134,10 +133,9 @@ namespace BoardingHouseSys.Forms
             btnBackTop.Dock = DockStyle.Left;
             btnBackTop.FlatStyle = FlatStyle.Flat;
             btnBackTop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnBackTop.Location = new Point(14, 17);
-            btnBackTop.Margin = new Padding(4, 5, 4, 5);
+            btnBackTop.Location = new Point(10, 10);
             btnBackTop.Name = "btnBackTop";
-            btnBackTop.Size = new Size(257, 49);
+            btnBackTop.Size = new Size(180, 30);
             btnBackTop.TabIndex = 0;
             btnBackTop.Text = "← Back to Dashboard";
             btnBackTop.TextAlign = ContentAlignment.MiddleLeft;
@@ -156,25 +154,22 @@ namespace BoardingHouseSys.Forms
             grpInput.Controls.Add(btnUpdate);
             grpInput.Controls.Add(btnDelete);
             grpInput.Controls.Add(btnClear);
-            grpInput.Location = new Point(29, 117);
-            grpInput.Margin = new Padding(4, 5, 4, 5);
+            grpInput.Location = new Point(20, 70);
             grpInput.Name = "grpInput";
-            grpInput.Padding = new Padding(4, 5, 4, 5);
-            grpInput.Size = new Size(543, 700);
+            grpInput.Size = new Size(380, 420);
             grpInput.TabIndex = 0;
             grpInput.TabStop = false;
             grpInput.Text = "Room Details";
             // 
             // btnRefresh
             // 
-            btnRefresh.BackColor = UITheme.PrimaryColor;
+            btnRefresh.BackColor = Color.FromArgb(0, 123, 255);
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnRefresh.ForeColor = Color.White;
-            btnRefresh.Location = new Point(29, 417);
-            btnRefresh.Margin = new Padding(4, 5, 4, 5);
+            btnRefresh.Location = new Point(20, 250);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(471, 50);
+            btnRefresh.Size = new Size(330, 30);
             btnRefresh.TabIndex = 10;
             btnRefresh.Text = "Refresh List";
             btnRefresh.UseVisualStyleBackColor = false;
@@ -183,97 +178,88 @@ namespace BoardingHouseSys.Forms
             // 
             lblRoom.AutoSize = true;
             lblRoom.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblRoom.Location = new Point(29, 67);
-            lblRoom.Margin = new Padding(4, 0, 4, 0);
+            lblRoom.Location = new Point(20, 40);
             lblRoom.Name = "lblRoom";
-            lblRoom.Size = new Size(130, 28);
+            lblRoom.Size = new Size(65, 19);
             lblRoom.TabIndex = 0;
             lblRoom.Text = "Room #:";
             // 
             // txtRoomNumber
             // 
-            txtRoomNumber.Location = new Point(143, 62);
-            txtRoomNumber.Margin = new Padding(4, 5, 4, 5);
+            txtRoomNumber.Location = new Point(100, 37);
             txtRoomNumber.Name = "txtRoomNumber";
-            txtRoomNumber.Size = new Size(355, 34);
+            txtRoomNumber.Size = new Size(250, 23);
             txtRoomNumber.TabIndex = 1;
             // 
             // lblCap
             // 
             lblCap.AutoSize = true;
             lblCap.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblCap.Location = new Point(29, 133);
-            lblCap.Margin = new Padding(4, 0, 4, 0);
+            lblCap.Location = new Point(20, 80);
             lblCap.Name = "lblCap";
-            lblCap.Size = new Size(130, 28);
+            lblCap.Size = new Size(71, 19);
             lblCap.TabIndex = 2;
             lblCap.Text = "Capacity:";
             // 
             // txtCapacity
             // 
-            txtCapacity.Location = new Point(143, 128);
-            txtCapacity.Margin = new Padding(4, 5, 4, 5);
+            txtCapacity.Location = new Point(100, 77);
             txtCapacity.Name = "txtCapacity";
-            txtCapacity.Size = new Size(355, 34);
+            txtCapacity.Size = new Size(250, 23);
             txtCapacity.TabIndex = 3;
             // 
             // lblRate
             // 
             lblRate.AutoSize = true;
             lblRate.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblRate.Location = new Point(29, 200);
-            lblRate.Margin = new Padding(4, 0, 4, 0);
+            lblRate.Location = new Point(20, 120);
             lblRate.Name = "lblRate";
-            lblRate.Size = new Size(130, 28);
+            lblRate.Size = new Size(43, 19);
             lblRate.TabIndex = 4;
             lblRate.Text = "Rate:";
             // 
             // txtRate
             // 
-            txtRate.Location = new Point(143, 195);
-            txtRate.Margin = new Padding(4, 5, 4, 5);
+            txtRate.Location = new Point(100, 117);
             txtRate.Name = "txtRate";
-            txtRate.Size = new Size(355, 34);
+            txtRate.Size = new Size(250, 23);
             txtRate.TabIndex = 5;
             // 
             // btnAdd
             // 
-            btnAdd.BackColor = UITheme.SuccessColor;
+            btnAdd.BackColor = Color.FromArgb(40, 167, 69);
             btnAdd.FlatStyle = FlatStyle.Flat;
             btnAdd.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnAdd.ForeColor = Color.White;
-            btnAdd.Location = new Point(143, 267);
-            btnAdd.Margin = new Padding(4, 5, 4, 5);
+            btnAdd.Location = new Point(100, 160);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(114, 50);
+            btnAdd.Size = new Size(80, 30);
             btnAdd.TabIndex = 6;
             btnAdd.Text = "Add";
             btnAdd.UseVisualStyleBackColor = false;
             // 
             // btnUpdate
             // 
-            btnUpdate.BackColor = UITheme.PrimaryColor;
+            btnUpdate.BackColor = Color.FromArgb(0, 123, 255);
             btnUpdate.FlatStyle = FlatStyle.Flat;
             btnUpdate.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnUpdate.ForeColor = Color.White;
-            btnUpdate.Location = new Point(264, 267);
-            btnUpdate.Margin = new Padding(4, 5, 4, 5);
+            btnUpdate.Location = new Point(185, 160);
             btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(114, 50);
+            btnUpdate.Size = new Size(80, 30);
             btnUpdate.TabIndex = 7;
             btnUpdate.Text = "Update";
             btnUpdate.UseVisualStyleBackColor = false;
             // 
             // btnDelete
             // 
-            btnDelete.BackColor = UITheme.DangerColor;
+            btnDelete.BackColor = Color.FromArgb(220, 53, 69);
             btnDelete.FlatStyle = FlatStyle.Flat;
             btnDelete.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnDelete.ForeColor = Color.White;
-            btnDelete.Location = new Point(386, 267);
-            btnDelete.Margin = new Padding(4, 5, 4, 5);
+            btnDelete.Location = new Point(270, 160);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(114, 50);
+            btnDelete.Size = new Size(80, 30);
             btnDelete.TabIndex = 8;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = false;
@@ -284,10 +270,9 @@ namespace BoardingHouseSys.Forms
             btnClear.FlatStyle = FlatStyle.Flat;
             btnClear.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnClear.ForeColor = Color.White;
-            btnClear.Location = new Point(143, 333);
-            btnClear.Margin = new Padding(4, 5, 4, 5);
+            btnClear.Location = new Point(100, 200);
             btnClear.Name = "btnClear";
-            btnClear.Size = new Size(357, 50);
+            btnClear.Size = new Size(250, 30);
             btnClear.TabIndex = 9;
             btnClear.Text = "Clear";
             btnClear.UseVisualStyleBackColor = false;
@@ -299,10 +284,9 @@ namespace BoardingHouseSys.Forms
             btnBack.FlatStyle = FlatStyle.Flat;
             btnBack.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnBack.ForeColor = Color.White;
-            btnBack.Location = new Point(29, 850);
-            btnBack.Margin = new Padding(4, 5, 4, 5);
+            btnBack.Location = new Point(20, 510);
             btnBack.Name = "btnBack";
-            btnBack.Size = new Size(543, 67);
+            btnBack.Size = new Size(380, 40);
             btnBack.TabIndex = 7;
             btnBack.Text = "Back to Dashboard";
             btnBack.UseVisualStyleBackColor = false;
@@ -314,15 +298,14 @@ namespace BoardingHouseSys.Forms
             dgvRooms.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvRooms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvRooms.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvRooms.Location = new Point(600, 192);
-            dgvRooms.Margin = new Padding(4, 5, 4, 5);
+            dgvRooms.Location = new Point(420, 115);
             dgvRooms.MultiSelect = false;
             dgvRooms.Name = "dgvRooms";
             dgvRooms.ReadOnly = true;
             dgvRooms.RowHeadersVisible = false;
             dgvRooms.RowHeadersWidth = 62;
             dgvRooms.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvRooms.Size = new Size(857, 942);
+            dgvRooms.Size = new Size(985, 565);
             dgvRooms.TabIndex = 7;
             // 
             // pnlListHeader
@@ -333,70 +316,66 @@ namespace BoardingHouseSys.Forms
             pnlListHeader.Controls.Add(cmbBoardingHouses);
             pnlListHeader.Controls.Add(btnAddQuick);
             pnlListHeader.Controls.Add(txtSearch);
-            pnlListHeader.Location = new Point(600, 117);
-            pnlListHeader.Margin = new Padding(4, 5, 4, 5);
+            pnlListHeader.Location = new Point(420, 70);
             pnlListHeader.Name = "pnlListHeader";
-            pnlListHeader.Size = new Size(1143, 80);
+            pnlListHeader.Size = new Size(1185, 48);
             pnlListHeader.TabIndex = 6;
             // 
             // lblListTitle
             // 
             lblListTitle.AutoSize = true;
             lblListTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblListTitle.Location = new Point(0, 20);
-            lblListTitle.Margin = new Padding(4, 0, 4, 0);
+            lblListTitle.Location = new Point(0, 12);
             lblListTitle.Name = "lblListTitle";
-            lblListTitle.Size = new Size(130, 32);
+            lblListTitle.Size = new Size(85, 21);
             lblListTitle.TabIndex = 0;
             lblListTitle.Text = "Room List";
             // 
             // lblBoardingHouse
             // 
-            lblBoardingHouse.Dock = DockStyle.Right;
+            lblBoardingHouse.AutoSize = true;
             lblBoardingHouse.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblBoardingHouse.Location = new Point(318, 0);
-            lblBoardingHouse.Margin = new Padding(4, 0, 4, 0);
+            lblBoardingHouse.Location = new Point(101, 12);
             lblBoardingHouse.Name = "lblBoardingHouse";
-            lblBoardingHouse.Padding = new Padding(0, 0, 10, 0);
-            lblBoardingHouse.Size = new Size(170, 80);
+            lblBoardingHouse.Padding = new Padding(0, 0, 7, 0);
+            lblBoardingHouse.Size = new Size(128, 19);
             lblBoardingHouse.TabIndex = 3;
             lblBoardingHouse.Text = "Boarding House:";
-            lblBoardingHouse.TextAlign = ContentAlignment.MiddleRight;
+            lblBoardingHouse.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // cmbBoardingHouses
             // 
             cmbBoardingHouses.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbBoardingHouses.Font = new Font("Segoe UI", 11F);
             cmbBoardingHouses.FormattingEnabled = true;
-            cmbBoardingHouses.Location = new Point(490, 20);
-            cmbBoardingHouses.Margin = new Padding(6, 0, 6, 0);
+            cmbBoardingHouses.Location = new Point(236, 11);
+            cmbBoardingHouses.Margin = new Padding(4, 0, 4, 0);
             cmbBoardingHouses.Name = "cmbBoardingHouses";
-            cmbBoardingHouses.Size = new Size(300, 38);
+            cmbBoardingHouses.Size = new Size(183, 28);
             cmbBoardingHouses.TabIndex = 4;
             // 
             // btnAddQuick
             // 
-            btnAddQuick.BackColor = UITheme.SuccessColor;
-            btnAddQuick.Dock = DockStyle.Right;
+            btnAddQuick.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnAddQuick.BackColor = Color.FromArgb(40, 167, 69);
             btnAddQuick.FlatStyle = FlatStyle.Flat;
             btnAddQuick.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnAddQuick.ForeColor = Color.White;
-            btnAddQuick.Location = new Point(790, 0);
-            btnAddQuick.Margin = new Padding(4, 5, 4, 5);
+            btnAddQuick.Location = new Point(745, 10);
             btnAddQuick.Name = "btnAddQuick";
-            btnAddQuick.Size = new Size(150, 80);
+            btnAddQuick.Size = new Size(105, 48);
             btnAddQuick.TabIndex = 2;
             btnAddQuick.Text = "Add Room";
             btnAddQuick.UseVisualStyleBackColor = false;
             // 
             // txtSearch
             // 
+            txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             txtSearch.Font = new Font("Segoe UI", 11F);
-            txtSearch.Location = new Point(950, 22);
-            txtSearch.Margin = new Padding(4, 5, 4, 5);
+            txtSearch.Location = new Point(560, 11);
             txtSearch.Name = "txtSearch";
             txtSearch.PlaceholderText = "Search rooms...";
-            txtSearch.Size = new Size(250, 37);
+            txtSearch.Size = new Size(176, 27);
             txtSearch.TabIndex = 1;
             // 
             // searchTimer
@@ -405,19 +384,19 @@ namespace BoardingHouseSys.Forms
             // 
             // FormRooms
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1500, 1050);
+            ClientSize = new Size(1284, 421);
             Controls.Add(pnlTop);
             Controls.Add(grpInput);
             Controls.Add(btnBack);
             Controls.Add(pnlListHeader);
             Controls.Add(dgvRooms);
-            Margin = new Padding(4, 5, 4, 5);
             Name = "FormRooms";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Manage Rooms";
             WindowState = FormWindowState.Maximized;
+            Load += FormRooms_Load;
             pnlTop.ResumeLayout(false);
             grpInput.ResumeLayout(false);
             grpInput.PerformLayout();
@@ -746,6 +725,11 @@ namespace BoardingHouseSys.Forms
             public string Text { get; set; } = "";
             public object Value { get; set; } = null!;
             public override string ToString() => Text;
+        }
+
+        private void FormRooms_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

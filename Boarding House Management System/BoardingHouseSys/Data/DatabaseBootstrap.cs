@@ -103,14 +103,22 @@ namespace BoardingHouseSys.Data
                         );";
                     new MySqlCommand(sqlBH, conn).ExecuteNonQuery();
 
-                    // 2. Add BoardingHouseId to Rooms
-                    // Check if column exists first to avoid errors on re-run
                     try {
                         string alterRooms = "ALTER TABLE Rooms ADD COLUMN BoardingHouseId INT NULL;";
                         new MySqlCommand(alterRooms, conn).ExecuteNonQuery();
                         string fkRooms = "ALTER TABLE Rooms ADD FOREIGN KEY (BoardingHouseId) REFERENCES BoardingHouses(Id);";
                         new MySqlCommand(fkRooms, conn).ExecuteNonQuery();
-                    } catch (Exception) { /* Column likely exists */ }
+                    } catch (Exception) { }
+
+                    try {
+                        string dropUniqueRoomNumber = "ALTER TABLE Rooms DROP INDEX RoomNumber;";
+                        new MySqlCommand(dropUniqueRoomNumber, conn).ExecuteNonQuery();
+                    } catch (Exception) { }
+
+                    try {
+                        string addCompositeUnique = "ALTER TABLE Rooms ADD UNIQUE KEY UX_Rooms_BH_Room (BoardingHouseId, RoomNumber);";
+                        new MySqlCommand(addCompositeUnique, conn).ExecuteNonQuery();
+                    } catch (Exception) { }
 
                     // 3. Add BoardingHouseId to Boarders
                     try {

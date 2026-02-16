@@ -39,6 +39,8 @@ namespace BoardingHouseSys.Forms
         private System.Windows.Forms.Label lblRoomVal;
         private System.Windows.Forms.Label lblRent;
         private System.Windows.Forms.Label lblRentVal;
+        private System.Windows.Forms.Label lblBoardingHouse;
+        private System.Windows.Forms.Label lblBoardingHouseVal;
         private System.Windows.Forms.Panel rightPanel;
         private System.Windows.Forms.Label lblHistory;
         private System.Windows.Forms.DataGridView dgvHistory;
@@ -96,6 +98,8 @@ namespace BoardingHouseSys.Forms
             lblRoomVal = new Label();
             lblRent = new Label();
             lblRentVal = new Label();
+            lblBoardingHouse = new Label();
+            lblBoardingHouseVal = new Label();
             rightPanel = new Panel();
             dgvHistory = new DataGridView();
             lblHistory = new Label();
@@ -196,6 +200,9 @@ namespace BoardingHouseSys.Forms
             infoPanel.Controls.Add(lblRoomVal);
             infoPanel.Controls.Add(lblRent);
             infoPanel.Controls.Add(lblRentVal);
+            infoPanel.Controls.Add(lblBoardingHouse);
+            infoPanel.Controls.Add(lblBoardingHouseVal);
+            infoPanel.AutoScroll = true;
             infoPanel.Dock = DockStyle.Fill;
             infoPanel.Location = new Point(20, 52);
             infoPanel.Name = "infoPanel";
@@ -324,6 +331,20 @@ namespace BoardingHouseSys.Forms
             lblRentVal.Size = new Size(200, 28);
             lblRentVal.TabIndex = 11;
             lblRentVal.Text = "...";
+            lblBoardingHouse.AutoSize = true;
+            lblBoardingHouse.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblBoardingHouse.Location = new Point(20, 460);
+            lblBoardingHouse.Name = "lblBoardingHouse";
+            lblBoardingHouse.Size = new Size(129, 28);
+            lblBoardingHouse.TabIndex = 12;
+            lblBoardingHouse.Text = "Boarding House:";
+            lblBoardingHouseVal.AutoEllipsis = true;
+            lblBoardingHouseVal.Font = new Font("Segoe UI", 10F);
+            lblBoardingHouseVal.Location = new Point(20, 490);
+            lblBoardingHouseVal.Name = "lblBoardingHouseVal";
+            lblBoardingHouseVal.Size = new Size(380, 28);
+            lblBoardingHouseVal.TabIndex = 13;
+            lblBoardingHouseVal.Text = "...";
             // 
             // rightPanel
             // 
@@ -475,6 +496,9 @@ namespace BoardingHouseSys.Forms
                     
                     object rate = row["MonthlyRate"];
                     lblRentVal.Text = (rate != DBNull.Value) ? Convert.ToDecimal(rate).ToString("C") : "N/A";
+
+                    object bhName = row["BoardingHouseName"];
+                    lblBoardingHouseVal.Text = (bhName != DBNull.Value) ? bhName.ToString() : "N/A";
 
                     int boarderId = Convert.ToInt32(row["Id"]);
                     _currentBoarderId = boarderId; // Store ID
