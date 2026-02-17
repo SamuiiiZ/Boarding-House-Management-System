@@ -342,7 +342,7 @@ namespace BoardingHouseSys.Forms
             listSplitContainer.Panel2.Controls.Add(dgvPayments);
             listSplitContainer.Panel2.Controls.Add(pnlPaymentsHeader);
             listSplitContainer.Size = new Size(879, 351);
-            listSplitContainer.SplitterDistance = 140;
+            listSplitContainer.SplitterDistance = 144;
             listSplitContainer.SplitterWidth = 2;
             listSplitContainer.TabIndex = 0;
             // 
@@ -360,7 +360,7 @@ namespace BoardingHouseSys.Forms
             dgvBoarders.RowHeadersVisible = false;
             dgvBoarders.RowHeadersWidth = 62;
             dgvBoarders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvBoarders.Size = new Size(879, 98);
+            dgvBoarders.Size = new Size(879, 102);
             dgvBoarders.TabIndex = 0;
             // 
             // pnlListHeader
@@ -429,7 +429,7 @@ namespace BoardingHouseSys.Forms
             dgvPayments.RowHeadersVisible = false;
             dgvPayments.RowHeadersWidth = 62;
             dgvPayments.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPayments.Size = new Size(879, 167);
+            dgvPayments.Size = new Size(879, 163);
             dgvPayments.TabIndex = 1;
             // 
             // pnlPaymentsHeader
@@ -1649,11 +1649,24 @@ namespace BoardingHouseSys.Forms
         {
             if (dgvPayments.Columns.Count == 0) return;
 
-            dgvPayments.Columns["Id"].Visible = false;
-            dgvPayments.Columns["BoarderId"].Visible = false;
-            dgvPayments.Columns["Amount"].DefaultCellStyle.Format = "C2";
-            dgvPayments.Columns["Amount"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvPayments.Columns["PaymentDate"].DefaultCellStyle.Format = "MM/dd/yyyy";
+            var colId = dgvPayments.Columns["Id"];
+            if (colId != null) colId.Visible = false;
+
+            var colBoarderId = dgvPayments.Columns["BoarderId"];
+            if (colBoarderId != null) colBoarderId.Visible = false;
+
+            var colAmount = dgvPayments.Columns["Amount"];
+            if (colAmount != null)
+            {
+                colAmount.DefaultCellStyle.Format = "C2";
+                colAmount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+
+            var colPaymentDate = dgvPayments.Columns["PaymentDate"];
+            if (colPaymentDate != null)
+            {
+                colPaymentDate.DefaultCellStyle.Format = "MM/dd/yyyy";
+            }
         }
 
         private void PerformPaymentSearch(string keyword)

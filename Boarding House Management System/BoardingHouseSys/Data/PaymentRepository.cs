@@ -69,6 +69,7 @@ namespace BoardingHouseSys.Data
             string query = @"
                 SELECT 
                     p.Id, 
+                    p.BoarderId,
                     p.Amount, 
                     p.MonthPaid, 
                     p.YearPaid, 
