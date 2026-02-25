@@ -53,36 +53,37 @@ namespace BoardingHouseSys.Forms
             
             // Apply theme styles
             UITheme.ApplyFormStyle(this);
+            ApplyTheme();
+
             // 
             // txtUsername
             // 
-            txtUsername.Location = new Point(450, 220);
+            txtUsername.Location = new Point(450, 230);
             txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(320, 37);
+            txtUsername.Size = new Size(320, 35);
             txtUsername.TabIndex = 1;
             txtUsername.Text = "admin";
-            UITheme.ApplyTextBoxStyle(txtUsername);
             // 
             // txtPassword
             // 
             txtPassword.BackColor = Color.WhiteSmoke;
             txtPassword.BorderStyle = BorderStyle.FixedSingle;
-            txtPassword.Font = new Font("Segoe UI", 11F);
-            txtPassword.Location = new Point(450, 290);
+            txtPassword.Font = new Font("Segoe UI", 12F);
+            txtPassword.Location = new Point(450, 315);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
-            txtPassword.Size = new Size(320, 37);
+            txtPassword.Size = new Size(320, 35);
             txtPassword.TabIndex = 2;
             txtPassword.Text = "admin123";
             // 
             // btnLogin
             // 
-            btnLogin.BackColor = Color.FromArgb(0, 123, 255);
+            btnLogin.BackColor = Color.FromArgb(25, 118, 210);
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(450, 350);
+            btnLogin.Location = new Point(450, 380);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(150, 45);
             btnLogin.TabIndex = 3;
@@ -96,7 +97,7 @@ namespace BoardingHouseSys.Forms
             btnExit.FlatStyle = FlatStyle.Flat;
             btnExit.Font = new Font("Segoe UI", 11F);
             btnExit.ForeColor = Color.White;
-            btnExit.Location = new Point(620, 350);
+            btnExit.Location = new Point(620, 380);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(150, 45);
             btnExit.TabIndex = 4;
@@ -106,9 +107,9 @@ namespace BoardingHouseSys.Forms
             // lblUsername
             // 
             lblUsername.AutoSize = true;
-            lblUsername.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblUsername.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblUsername.ForeColor = Color.FromArgb(64, 64, 64);
-            lblUsername.Location = new Point(450, 195);
+            lblUsername.Location = new Point(450, 200);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(116, 30);
             lblUsername.TabIndex = 0;
@@ -117,9 +118,9 @@ namespace BoardingHouseSys.Forms
             // lblPassword
             // 
             lblPassword.AutoSize = true;
-            lblPassword.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblPassword.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblPassword.ForeColor = Color.FromArgb(64, 64, 64);
-            lblPassword.Location = new Point(450, 265);
+            lblPassword.Location = new Point(450, 285);
             lblPassword.Name = "lblPassword";
             lblPassword.Size = new Size(109, 30);
             lblPassword.TabIndex = 0;
@@ -128,8 +129,8 @@ namespace BoardingHouseSys.Forms
             // lblTitle
             // 
             lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.FromArgb(0, 123, 255);
+            lblTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(25, 118, 210);
             lblTitle.Location = new Point(450, 120);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(664, 48);
@@ -149,7 +150,7 @@ namespace BoardingHouseSys.Forms
             // 
             // panel1
             // 
-            panel1.BackColor = Color.FromArgb(0, 123, 255);
+            panel1.BackColor = Color.FromArgb(25, 118, 210);
             panel1.Controls.Add(pictureBox1);
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
@@ -191,6 +192,18 @@ namespace BoardingHouseSys.Forms
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
+        }
+
+        private void ApplyTheme()
+        {
+            UITheme.ApplyPrimaryButton(btnLogin, 150, 45);
+            UITheme.ApplySecondaryButton(btnExit, 150, 45);
+            UITheme.ApplyTextBoxStyle(txtUsername);
+            UITheme.ApplyTextBoxStyle(txtPassword);
+            
+            // Apply theme colors to static controls
+            panel1.BackColor = UITheme.PrimaryColor;
+            lblTitle.ForeColor = UITheme.PrimaryColor;
         }
 
         private void btnLogin_Click(object? sender, EventArgs e)

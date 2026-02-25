@@ -24,7 +24,7 @@ namespace BoardingHouseSys.Forms
         private Button btnUpdate = null!;
         private Button btnDelete = null!;
         private Button btnRefresh = null!;
-        private Button btnBack = null!;
+        // private Button btnBack = null!; // Removed redundant button
         private GroupBox grpInput = null!;
         private Label lblUser = null!;
         private Label lblPass = null!;
@@ -38,6 +38,7 @@ namespace BoardingHouseSys.Forms
         public FormUsers()
         {
             InitializeComponent();
+            UITheme.ApplyFormStyle(this);
             WireEvents();
             _currentUser = new User();
             _repository = new UserRepository();
@@ -46,6 +47,7 @@ namespace BoardingHouseSys.Forms
         public FormUsers(User user)
         {
             InitializeComponent();
+            UITheme.ApplyFormStyle(this);
             WireEvents();
             _currentUser = user;
             _repository = new UserRepository();
@@ -62,6 +64,26 @@ namespace BoardingHouseSys.Forms
             cmbRole.SelectedIndex = 0;
             
             LoadUsers();
+            ApplyTheme();
+        }
+        
+        private void ApplyTheme()
+        {
+             UITheme.ApplyHeaderStyle(pnlTop);
+             
+             UITheme.ApplyNavButton(btnBackTop, 180, 30);
+             UITheme.ApplySuccessButton(btnAdd, 100, 45);
+             UITheme.ApplyPrimaryButton(btnUpdate, 100, 45);
+             UITheme.ApplyDangerButton(btnDelete, 100, 45);
+             UITheme.ApplySecondaryButton(btnRefresh, 320, 45);
+             // UITheme.ApplyNavButton(btnBack, 380, 50); // Removed
+             
+             UITheme.ApplyGroupBoxStyle(grpInput);
+             
+             UITheme.ApplyTextBoxStyle(txtUsername);
+             UITheme.ApplyTextBoxStyle(txtPassword);
+             
+             UITheme.ApplyComboBoxStyle(cmbRole);
         }
 
         private void WireEvents()
@@ -70,7 +92,6 @@ namespace BoardingHouseSys.Forms
             this.btnUpdate.Click += (s, e) => UpdateUser();
             this.btnDelete.Click += (s, e) => DeleteUser();
             this.btnRefresh.Click += (s, e) => LoadUsers();
-            this.btnBack.Click += (s, e) => this.Close();
             this.btnBackTop.Click += (s, e) => this.Close();
             this.dgvUsers.CellClick += DgvUsers_CellClick;
             this.grpInput.Enter += grpInput_Enter;
@@ -88,7 +109,7 @@ namespace BoardingHouseSys.Forms
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
-            this.btnBack = new System.Windows.Forms.Button();
+            // this.btnBack = new System.Windows.Forms.Button(); // Removed
             this.grpInput = new System.Windows.Forms.GroupBox();
             this.lblUser = new System.Windows.Forms.Label();
             this.lblPass = new System.Windows.Forms.Label();
@@ -164,7 +185,7 @@ namespace BoardingHouseSys.Forms
             // 
             this.lblUser.AutoSize = true;
             this.lblUser.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblUser.Location = new System.Drawing.Point(20, 35);
+            this.lblUser.Location = new System.Drawing.Point(20, 40);
             this.lblUser.Name = "lblUser";
             this.lblUser.Size = new System.Drawing.Size(120, 25);
             this.lblUser.TabIndex = 0;
@@ -173,7 +194,7 @@ namespace BoardingHouseSys.Forms
             // txtUsername
             // 
             this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.txtUsername.Location = new System.Drawing.Point(140, 32);
+            this.txtUsername.Location = new System.Drawing.Point(140, 35);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(210, 35);
             this.txtUsername.TabIndex = 1;
@@ -182,7 +203,7 @@ namespace BoardingHouseSys.Forms
             // 
             this.lblPass.AutoSize = true;
             this.lblPass.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblPass.Location = new System.Drawing.Point(20, 75);
+            this.lblPass.Location = new System.Drawing.Point(20, 90);
             this.lblPass.Name = "lblPass";
             this.lblPass.Size = new System.Drawing.Size(120, 25);
             this.lblPass.TabIndex = 2;
@@ -191,7 +212,7 @@ namespace BoardingHouseSys.Forms
             // txtPassword
             // 
             this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.txtPassword.Location = new System.Drawing.Point(140, 72);
+            this.txtPassword.Location = new System.Drawing.Point(140, 85);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(210, 35);
@@ -202,7 +223,7 @@ namespace BoardingHouseSys.Forms
             // 
             this.lblRole.AutoSize = true;
             this.lblRole.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblRole.Location = new System.Drawing.Point(20, 115);
+            this.lblRole.Location = new System.Drawing.Point(20, 140);
             this.lblRole.Name = "lblRole";
             this.lblRole.Size = new System.Drawing.Size(120, 25);
             this.lblRole.TabIndex = 4;
@@ -212,7 +233,7 @@ namespace BoardingHouseSys.Forms
             // 
             this.cmbRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRole.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.cmbRole.Location = new System.Drawing.Point(140, 112);
+            this.cmbRole.Location = new System.Drawing.Point(140, 135);
             this.cmbRole.Name = "cmbRole";
             this.cmbRole.Size = new System.Drawing.Size(210, 38);
             this.cmbRole.TabIndex = 5;
@@ -223,7 +244,7 @@ namespace BoardingHouseSys.Forms
             this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdd.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(20, 170);
+            this.btnAdd.Location = new System.Drawing.Point(20, 190);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(100, 45);
             this.btnAdd.TabIndex = 6;
@@ -236,7 +257,7 @@ namespace BoardingHouseSys.Forms
             this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUpdate.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnUpdate.ForeColor = System.Drawing.Color.White;
-            this.btnUpdate.Location = new System.Drawing.Point(130, 170);
+            this.btnUpdate.Location = new System.Drawing.Point(130, 190);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(100, 45);
             this.btnUpdate.TabIndex = 7;
@@ -249,7 +270,7 @@ namespace BoardingHouseSys.Forms
             this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(240, 170);
+            this.btnDelete.Location = new System.Drawing.Point(240, 190);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(100, 45);
             this.btnDelete.TabIndex = 8;
@@ -262,26 +283,12 @@ namespace BoardingHouseSys.Forms
             this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnRefresh.ForeColor = System.Drawing.Color.White;
-            this.btnRefresh.Location = new System.Drawing.Point(20, 230);
+            this.btnRefresh.Location = new System.Drawing.Point(20, 250);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(320, 45);
             this.btnRefresh.TabIndex = 9;
             this.btnRefresh.Text = "Refresh List";
             this.btnRefresh.UseVisualStyleBackColor = false;
-            // 
-            // btnBack
-            // 
-            this.btnBack.BackColor = System.Drawing.Color.LightSlateGray;
-            this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBack.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnBack.ForeColor = System.Drawing.Color.White;
-            this.btnBack.Location = new System.Drawing.Point(20, 510);
-            this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(380, 50);
-            this.btnBack.TabIndex = 10;
-            this.btnBack.Text = "Back to Dashboard";
-            this.btnBack.UseVisualStyleBackColor = false;
-            this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             // 
             // FormUsers
             // 
@@ -289,7 +296,7 @@ namespace BoardingHouseSys.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1050, 650);
             this.Controls.Add(this.pnlTop);
-            this.Controls.Add(this.btnBack);
+            // this.Controls.Add(this.btnBack); // Removed
             this.Controls.Add(this.grpInput);
             this.Controls.Add(this.dgvUsers);
             this.Name = "FormUsers";
@@ -391,7 +398,7 @@ namespace BoardingHouseSys.Forms
                 dgvUsers.DataSource = users;
 
                 // Hide sensitive or internal columns
-                if (dgvUsers.Columns["PasswordHash"] != null)
+                if (dgvUsers.Columns.Contains("PasswordHash") && dgvUsers.Columns["PasswordHash"] != null)
                     dgvUsers.Columns["PasswordHash"].Visible = false;
             }
             catch (Exception ex)

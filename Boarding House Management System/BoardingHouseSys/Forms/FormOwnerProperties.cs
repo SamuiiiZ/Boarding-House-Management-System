@@ -8,6 +8,7 @@ using BoardingHouseSys.Data;
 using BoardingHouseSys.Models;
 using BoardingHouseSys.UI;
 using System.Collections.Generic;
+using System.IO;
 
 namespace BoardingHouseSys.Forms
 {
@@ -18,13 +19,12 @@ namespace BoardingHouseSys.Forms
         private BoardingHouse? _selectedHouse;
         private bool _isUpdatingResults = false;
         private string _pendingSearchText = "";
+        private bool _browseAll = false;
 
         // UI Controls - Exposed for Designer
         private System.ComponentModel.IContainer? components = null;
         private System.Windows.Forms.Panel pnlTop;
         private System.Windows.Forms.Button btnBackTop;
-        private System.Windows.Forms.Panel pnlBottom;
-        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.Panel panelLeft;
         private System.Windows.Forms.DataGridView dgvProperties;
@@ -52,12 +52,23 @@ namespace BoardingHouseSys.Forms
         private System.Windows.Forms.TextBox txtRules;
         private System.Windows.Forms.Label lblAmenities;
         private System.Windows.Forms.TextBox txtAmenities;
+        private System.Windows.Forms.Label lblPictures;
+        private System.Windows.Forms.FlowLayoutPanel pnlImages;
+        private System.Windows.Forms.PictureBox pbImage1;
+        private System.Windows.Forms.PictureBox pbImage2;
+        private System.Windows.Forms.PictureBox pbImage3;
+        private System.Windows.Forms.Label lblPicturesHint;
+        private System.Windows.Forms.FlowLayoutPanel pnlImageActions;
+        private System.Windows.Forms.Button btnUploadImages;
+        private System.Windows.Forms.Label lblDetailSummaryTitle;
+        private System.Windows.Forms.Label lblDetailSummary;
 
         public event Action<BoardingHouse>? PropertySelected;
 
         public FormOwnerProperties()
         {
             InitializeComponent();
+            UITheme.ApplyFormStyle(this);
             WireEvents();
             _currentUser = new User();
             _repository = new BoardingHouseRepository();
@@ -66,10 +77,71 @@ namespace BoardingHouseSys.Forms
         public FormOwnerProperties(User user)
         {
             InitializeComponent();
+            UITheme.ApplyFormStyle(this);
+            WireEvents();
+            _currentUser = user ?? new User();
+            _repository = new BoardingHouseRepository();
+            LoadProperties();
+            ApplyTheme();
+        }
+
+        public FormOwnerProperties(User user, bool browseAll)
+        {
+            InitializeComponent();
+            UITheme.ApplyFormStyle(this);
             WireEvents();
             _currentUser = user;
             _repository = new BoardingHouseRepository();
+            _browseAll = browseAll;
             LoadProperties();
+            ApplyTheme();
+            if (_browseAll) ApplyBrowseMode();
+        }
+
+        private void ApplyTheme()
+        {
+            UITheme.ApplyHeaderStyle(pnlTop);
+            UITheme.ApplyHeaderStyle(pnlListHeader);
+
+            UITheme.ApplyPanelStyle(panelLeft, UITheme.LightColor);
+            UITheme.ApplyPanelStyle(panelRight, Color.WhiteSmoke);
+
+            UITheme.ApplyNavButton(btnBackTop, 180, 30);
+            UITheme.ApplyButtonStyle(btnAdd);
+            UITheme.ApplyButtonStyle(btnEdit);
+            UITheme.ApplyButtonStyle(btnDelete);
+            UITheme.ApplyButtonStyle(btnSelect);
+
+            UITheme.ApplyGroupBoxStyle(grpInput);
+
+            UITheme.ApplyTextBoxStyle(txtSearch);
+            UITheme.ApplyTextBoxStyle(txtName);
+            UITheme.ApplyTextBoxStyle(txtAddress);
+            UITheme.ApplyTextBoxStyle(txtDescription);
+            UITheme.ApplyTextBoxStyle(txtRules);
+            UITheme.ApplyTextBoxStyle(txtAmenities);
+
+            if (dgvProperties != null) UITheme.ApplyDataGridViewStyle(dgvProperties);
+
+            if (lblListTitle != null) UITheme.ApplyHeaderLabelStyle(lblListTitle);
+            if (lblName != null) UITheme.ApplyLabelStyle(lblName, true);
+            if (lblAddress != null) UITheme.ApplyLabelStyle(lblAddress, true);
+            if (lblDescription != null) UITheme.ApplyLabelStyle(lblDescription, true);
+            if (lblRules != null) UITheme.ApplyLabelStyle(lblRules, true);
+            if (lblAmenities != null) UITheme.ApplyLabelStyle(lblAmenities, true);
+            if (lblPictures != null) UITheme.ApplySubHeaderLabelStyle(lblPictures);
+            if (lblDetailSummaryTitle != null) UITheme.ApplySubHeaderLabelStyle(lblDetailSummaryTitle);
+            if (lblDetailSummary != null) lblDetailSummary.ForeColor = UITheme.DarkColor;
+        }
+
+        private void ApplyBrowseMode()
+        {
+            if (lblListTitle != null) lblListTitle.Text = "Available Boarding Houses";
+            if (btnAdd != null) btnAdd.Visible = false;
+            if (btnEdit != null) btnEdit.Visible = false;
+            if (btnDelete != null) btnDelete.Visible = false;
+            if (btnSelect != null) btnSelect.Visible = false;
+            if (btnUploadImages != null) btnUploadImages.Visible = false;
         }
 
         protected override void Dispose(bool disposing)
@@ -86,8 +158,6 @@ namespace BoardingHouseSys.Forms
             components = new System.ComponentModel.Container();
             pnlTop = new Panel();
             btnBackTop = new Button();
-            pnlBottom = new Panel();
-            btnClose = new Button();
             splitContainer = new SplitContainer();
             panelLeft = new Panel();
             dgvProperties = new DataGridView();
@@ -107,6 +177,13 @@ namespace BoardingHouseSys.Forms
             lblAmenities = new Label();
             txtAmenities = new TextBox();
             lblName = new Label();
+            lblPictures = new Label();
+            pnlImages = new FlowLayoutPanel();
+            lblPicturesHint = new Label();
+            pnlImageActions = new FlowLayoutPanel();
+            btnUploadImages = new Button();
+            lblDetailSummaryTitle = new Label();
+            lblDetailSummary = new Label();
             pnlButtons = new FlowLayoutPanel();
             btnAdd = new Button();
             btnEdit = new Button();
@@ -114,7 +191,6 @@ namespace BoardingHouseSys.Forms
             btnSelect = new Button();
             searchTimer = new System.Windows.Forms.Timer(components);
             pnlTop.SuspendLayout();
-            pnlBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
             splitContainer.Panel1.SuspendLayout();
             splitContainer.Panel2.SuspendLayout();
@@ -137,7 +213,7 @@ namespace BoardingHouseSys.Forms
             pnlTop.Margin = new Padding(2);
             pnlTop.Name = "pnlTop";
             pnlTop.Padding = new Padding(7, 6, 7, 6);
-            pnlTop.Size = new Size(840, 30);
+            pnlTop.Size = new Size(840, 40); // Increased height
             pnlTop.TabIndex = 2;
             // 
             // btnBackTop
@@ -149,38 +225,11 @@ namespace BoardingHouseSys.Forms
             btnBackTop.Location = new Point(7, 6);
             btnBackTop.Margin = new Padding(2);
             btnBackTop.Name = "btnBackTop";
-            btnBackTop.Size = new Size(132, 18);
+            btnBackTop.Size = new Size(160, 28); // Increased size
             btnBackTop.TabIndex = 0;
             btnBackTop.Text = "← Back to Dashboard";
-            btnBackTop.TextAlign = ContentAlignment.MiddleLeft;
+            btnBackTop.TextAlign = ContentAlignment.MiddleCenter;
             btnBackTop.UseVisualStyleBackColor = false;
-            // 
-            // pnlBottom
-            // 
-            pnlBottom.BackColor = Color.WhiteSmoke;
-            pnlBottom.Controls.Add(btnClose);
-            pnlBottom.Dock = DockStyle.Bottom;
-            pnlBottom.Location = new Point(0, 385);
-            pnlBottom.Margin = new Padding(2);
-            pnlBottom.Name = "pnlBottom";
-            pnlBottom.Padding = new Padding(7, 6, 7, 6);
-            pnlBottom.Size = new Size(840, 36);
-            pnlBottom.TabIndex = 1;
-            // 
-            // btnClose
-            // 
-            btnClose.BackColor = Color.LightSlateGray;
-            btnClose.Dock = DockStyle.Right;
-            btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnClose.ForeColor = Color.White;
-            btnClose.Location = new Point(693, 6);
-            btnClose.Margin = new Padding(2);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(140, 24);
-            btnClose.TabIndex = 0;
-            btnClose.Text = "Back to Dashboard";
-            btnClose.UseVisualStyleBackColor = false;
             // 
             // splitContainer
             // 
@@ -224,7 +273,7 @@ namespace BoardingHouseSys.Forms
             dgvProperties.BackgroundColor = Color.White;
             dgvProperties.ColumnHeadersHeight = 40;
             dgvProperties.Dock = DockStyle.Fill;
-            dgvProperties.Location = new Point(14, 48);
+            dgvProperties.Location = new Point(14, 62); // Adjusted for header
             dgvProperties.Margin = new Padding(2);
             dgvProperties.MultiSelect = false;
             dgvProperties.Name = "dgvProperties";
@@ -232,7 +281,7 @@ namespace BoardingHouseSys.Forms
             dgvProperties.RowHeadersVisible = false;
             dgvProperties.RowHeadersWidth = 62;
             dgvProperties.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProperties.Size = new Size(292, 295);
+            dgvProperties.Size = new Size(292, 281);
             dgvProperties.TabIndex = 0;
             // 
             // pnlListHeader
@@ -243,26 +292,28 @@ namespace BoardingHouseSys.Forms
             pnlListHeader.Location = new Point(14, 12);
             pnlListHeader.Margin = new Padding(2);
             pnlListHeader.Name = "pnlListHeader";
-            pnlListHeader.Size = new Size(292, 36);
+            pnlListHeader.Size = new Size(292, 50); // Increased height to prevent overlap
             pnlListHeader.TabIndex = 1;
             // 
             // txtSearch
             // 
-            txtSearch.Location = new Point(119, 9);
+            txtSearch.Dock = DockStyle.Right; // Dock right to avoid overlap
+            txtSearch.Location = new Point(119, 12);
             txtSearch.Margin = new Padding(2);
             txtSearch.Name = "txtSearch";
             txtSearch.PlaceholderText = "Search properties...";
-            txtSearch.Size = new Size(148, 23);
+            txtSearch.Size = new Size(170, 23);
             txtSearch.TabIndex = 1;
             // 
             // lblListTitle
             // 
             lblListTitle.AutoSize = true;
+            lblListTitle.Dock = DockStyle.Left; // Dock left
             lblListTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblListTitle.Location = new Point(0, 9);
+            lblListTitle.Location = new Point(0, 0);
             lblListTitle.Margin = new Padding(2, 0, 2, 0);
             lblListTitle.Name = "lblListTitle";
-            lblListTitle.Size = new Size(106, 21);
+            lblListTitle.Size = new Size(106, 50); // Height matches panel
             lblListTitle.TabIndex = 0;
             lblListTitle.Text = "Property List";
             lblListTitle.TextAlign = ContentAlignment.MiddleLeft;
@@ -306,22 +357,32 @@ namespace BoardingHouseSys.Forms
             tableLayout.Controls.Add(lblAmenities, 0, 8);
             tableLayout.Controls.Add(txtAmenities, 0, 9);
             tableLayout.Controls.Add(lblName, 0, 0);
+            tableLayout.Controls.Add(lblPictures, 0, 10);
+            tableLayout.Controls.Add(pnlImages, 0, 11);
+            tableLayout.Controls.Add(pnlImageActions, 0, 12);
+            tableLayout.Controls.Add(lblDetailSummaryTitle, 0, 13);
+            tableLayout.Controls.Add(lblDetailSummary, 0, 14);
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.Location = new Point(14, 28);
             tableLayout.Margin = new Padding(2);
             tableLayout.Name = "tableLayout";
-            tableLayout.RowCount = 10;
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 21F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 21F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 21F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 21F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 21F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            tableLayout.Size = new Size(461, 231);
+            tableLayout.RowCount = 15;
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tableLayout.AutoSize = true;
+            tableLayout.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayout.TabIndex = 0;
             // 
             // txtName
@@ -425,6 +486,59 @@ namespace BoardingHouseSys.Forms
             txtAmenities.Size = new Size(457, 56);
             txtAmenities.TabIndex = 9;
             // 
+            // lblPictures
+            // 
+            lblPictures.Dock = DockStyle.Fill;
+            lblPictures.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblPictures.Margin = new Padding(0, 8, 0, 2);
+            lblPictures.Name = "lblPictures";
+            lblPictures.Size = new Size(461, 17);
+            lblPictures.TabIndex = 10;
+            lblPictures.Text = "Pictures:";
+            lblPictures.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // pnlImages
+            // 
+            pnlImages.Dock = DockStyle.Fill;
+            pnlImages.FlowDirection = FlowDirection.LeftToRight;
+            pnlImages.Margin = new Padding(0, 2, 0, 2);
+            pnlImages.Name = "pnlImages";
+            pnlImages.Size = new Size(461, 160); // Increased height
+            pnlImages.TabIndex = 11;
+            pnlImages.WrapContents = false;
+            // 
+            // lblPicturesHint
+            // 
+            lblPicturesHint.Dock = DockStyle.Fill;
+            lblPicturesHint.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            lblPicturesHint.ForeColor = Color.DimGray;
+            lblPicturesHint.Margin = new Padding(0, 10, 0, 0);
+            lblPicturesHint.Name = "lblPicturesHint";
+            lblPicturesHint.Size = new Size(270, 20);
+            lblPicturesHint.TabIndex = 0;
+            lblPicturesHint.Text = "No pictures available for this property.";
+            lblPicturesHint.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // pnlImageActions
+            // 
+            pnlImageActions.Dock = DockStyle.Fill;
+            pnlImageActions.FlowDirection = FlowDirection.LeftToRight;
+            pnlImageActions.Margin = new Padding(0, 2, 0, 2);
+            pnlImageActions.Name = "pnlImageActions";
+            pnlImageActions.Size = new Size(461, 40); // Increased height
+            pnlImageActions.TabIndex = 12;
+            pnlImageActions.WrapContents = false;
+            pnlImageActions.Controls.Add(btnUploadImages);
+            pnlImageActions.Controls.Add(lblPicturesHint);
+            // 
+            // btnUploadImages
+            // 
+            UITheme.ApplySuccessButton(btnUploadImages, 160, 36);
+            btnUploadImages.Margin = new Padding(0, 2, 10, 0);
+            btnUploadImages.Name = "btnUploadImages";
+            btnUploadImages.TabIndex = 0;
+            btnUploadImages.Text = "Upload Pictures";
+            // 
             // lblName
             // 
             lblName.Dock = DockStyle.Fill;
@@ -437,6 +551,28 @@ namespace BoardingHouseSys.Forms
             lblName.Text = "Name:";
             lblName.TextAlign = ContentAlignment.MiddleLeft;
             lblName.Click += lblName_Click;
+            // 
+            // lblDetailSummaryTitle
+            // 
+            lblDetailSummaryTitle.Dock = DockStyle.Fill;
+            lblDetailSummaryTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblDetailSummaryTitle.Margin = new Padding(0, 10, 0, 2);
+            lblDetailSummaryTitle.Name = "lblDetailSummaryTitle";
+            lblDetailSummaryTitle.Size = new Size(461, 17);
+            lblDetailSummaryTitle.TabIndex = 13;
+            lblDetailSummaryTitle.Text = "Property Summary:";
+            lblDetailSummaryTitle.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblDetailSummary
+            // 
+            lblDetailSummary.Dock = DockStyle.Fill;
+            lblDetailSummary.Font = new Font("Segoe UI", 9F);
+            lblDetailSummary.Margin = new Padding(0, 0, 0, 0);
+            lblDetailSummary.Name = "lblDetailSummary";
+            lblDetailSummary.Size = new Size(461, 60);
+            lblDetailSummary.TabIndex = 14;
+            lblDetailSummary.Text = "Select a property to see summary.";
+            lblDetailSummary.TextAlign = ContentAlignment.TopLeft;
             // 
             // pnlButtons
             // 
@@ -454,45 +590,67 @@ namespace BoardingHouseSys.Forms
             // 
             // btnAdd
             // 
-            btnAdd.BackColor = Color.FromArgb(40, 167, 69);
-            btnAdd.FlatStyle = FlatStyle.Flat;
-            btnAdd.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnAdd.ForeColor = Color.White;
+            UITheme.ApplySuccessButton(btnAdd, 90, 36);
             btnAdd.Location = new Point(9, 8);
             btnAdd.Margin = new Padding(2);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(84, 27);
             btnAdd.TabIndex = 0;
             btnAdd.Text = "Add New";
-            btnAdd.UseVisualStyleBackColor = false;
             // 
             // btnEdit
             // 
-            btnEdit.BackColor = Color.FromArgb(0, 123, 255);
-            btnEdit.FlatStyle = FlatStyle.Flat;
-            btnEdit.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnEdit.ForeColor = Color.White;
+            UITheme.ApplyPrimaryButton(btnEdit, 90, 36);
             btnEdit.Location = new Point(97, 8);
             btnEdit.Margin = new Padding(2);
             btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(84, 27);
             btnEdit.TabIndex = 1;
             btnEdit.Text = "Update";
-            btnEdit.UseVisualStyleBackColor = false;
             // 
             // btnDelete
             // 
-            btnDelete.BackColor = Color.FromArgb(220, 53, 69);
-            btnDelete.FlatStyle = FlatStyle.Flat;
-            btnDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnDelete.ForeColor = Color.White;
+            UITheme.ApplyDangerButton(btnDelete, 90, 36);
             btnDelete.Location = new Point(185, 8);
             btnDelete.Margin = new Padding(2);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(84, 27);
             btnDelete.TabIndex = 2;
             btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = false;
+            // 
+            // pbImage1
+            // 
+            pbImage1 = new PictureBox();
+            pbImage1.Size = new Size(200, 150); // Increased size
+            pbImage1.SizeMode = PictureBoxSizeMode.Zoom;
+            pbImage1.Margin = new Padding(0, 0, 10, 0);
+            pbImage1.Cursor = Cursors.Hand;
+            pbImage1.Click += (s, e) => ShowImageFull(pbImage1);
+            pbImage1.BorderStyle = BorderStyle.FixedSingle; // Added border
+            pbImage1.BackColor = Color.WhiteSmoke;
+            // 
+            // pbImage2
+            // 
+            pbImage2 = new PictureBox();
+            pbImage2.Size = new Size(200, 150); // Increased size
+            pbImage2.SizeMode = PictureBoxSizeMode.Zoom;
+            pbImage2.Margin = new Padding(0, 0, 10, 0);
+            pbImage2.Cursor = Cursors.Hand;
+            pbImage2.Click += (s, e) => ShowImageFull(pbImage2);
+            pbImage2.BorderStyle = BorderStyle.FixedSingle; // Added border
+            pbImage2.BackColor = Color.WhiteSmoke;
+            // 
+            // pbImage3
+            // 
+            pbImage3 = new PictureBox();
+            pbImage3.Size = new Size(200, 150); // Increased size
+            pbImage3.SizeMode = PictureBoxSizeMode.Zoom;
+            pbImage3.Margin = new Padding(0, 0, 0, 0);
+            pbImage3.Cursor = Cursors.Hand;
+            pbImage3.Click += (s, e) => ShowImageFull(pbImage3);
+            pbImage3.BorderStyle = BorderStyle.FixedSingle; // Added border
+            pbImage3.BackColor = Color.WhiteSmoke;
+
+            pnlImages.Controls.Add(pbImage1);
+            pnlImages.Controls.Add(pbImage2);
+            pnlImages.Controls.Add(pbImage3);
             // 
             // btnSelect
             // 
@@ -517,7 +675,6 @@ namespace BoardingHouseSys.Forms
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(840, 421);
             Controls.Add(splitContainer);
-            Controls.Add(pnlBottom);
             Controls.Add(pnlTop);
             Margin = new Padding(2);
             Name = "FormOwnerProperties";
@@ -525,7 +682,6 @@ namespace BoardingHouseSys.Forms
             Text = "My Boarding Houses";
             WindowState = FormWindowState.Maximized;
             pnlTop.ResumeLayout(false);
-            pnlBottom.ResumeLayout(false);
             splitContainer.Panel1.ResumeLayout(false);
             splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer).EndInit();
@@ -545,21 +701,82 @@ namespace BoardingHouseSys.Forms
         private void WireEvents()
         {
             this.btnBackTop.Click += (s, e) => this.Close();
-            this.btnClose.Click += (s, e) => this.Close();
             this.btnAdd.Click += (s, e) => AddProperty();
             this.btnEdit.Click += (s, e) => UpdateProperty();
             this.btnDelete.Click += (s, e) => DeleteProperty();
             this.btnSelect.Click += (s, e) => SelectProperty();
+            this.btnUploadImages.Click += (s, e) => UploadImagesForProperty();
             this.dgvProperties.SelectionChanged += (s, e) => LoadSelection();
+            this.dgvProperties.DataBindingComplete += (s, e) => ApplyPropertiesGridColumns();
             this.txtSearch.TextChanged += (s, e) => { _pendingSearchText = txtSearch.Text; searchTimer.Stop(); searchTimer.Start(); };
             this.searchTimer.Tick += (s, e) => { searchTimer.Stop(); PerformSearch(_pendingSearchText); };
+        }
+
+        private void ApplyPropertiesGridColumns()
+        {
+            if (dgvProperties == null || dgvProperties.IsDisposed) return;
+            if (dgvProperties.Columns == null || dgvProperties.Columns.Count == 0) return;
+
+            DataGridViewColumn? FindColumn(string key)
+            {
+                foreach (DataGridViewColumn col in dgvProperties.Columns)
+                {
+                    if (string.Equals(col.Name, key, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(col.DataPropertyName, key, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return col;
+                    }
+                }
+                return null;
+            }
+
+            var colId = FindColumn("Id");
+            if (colId != null) colId.Visible = false;
+            var colOwnerId = FindColumn("OwnerId");
+            if (colOwnerId != null) colOwnerId.Visible = false;
+            var colIsActive = FindColumn("IsActive");
+            if (colIsActive != null) colIsActive.Visible = false;
+            var colCreatedAt = FindColumn("CreatedAt");
+            if (colCreatedAt != null) colCreatedAt.Visible = false;
+            var colOwnerName = FindColumn("OwnerName");
+            if (colOwnerName != null) colOwnerName.Visible = false;
+            var colImage1 = FindColumn("ImagePath1");
+            if (colImage1 != null) colImage1.Visible = false;
+            var colImage2 = FindColumn("ImagePath2");
+            if (colImage2 != null) colImage2.Visible = false;
+            var colImage3 = FindColumn("ImagePath3");
+            if (colImage3 != null) colImage3.Visible = false;
+
+            var colDescription = FindColumn("Description");
+            if (colDescription != null) colDescription.Visible = false;
+            var colRules = FindColumn("Rules");
+            if (colRules != null) colRules.Visible = false;
+            var colAmenities = FindColumn("Amenities");
+            if (colAmenities != null) colAmenities.Visible = false;
+
+            var colName = FindColumn("Name");
+            if (colName != null && colName.DataGridView != null)
+            {
+                colName.HeaderText = "Property Name";
+                colName.MinimumWidth = 150;
+                colName.FillWeight = 40;
+            }
+
+            var colAddress = FindColumn("Address");
+            if (colAddress != null && colAddress.DataGridView != null)
+            {
+                colAddress.HeaderText = "Location";
+                colAddress.MinimumWidth = 150;
+                colAddress.FillWeight = 60;
+            }
         }
 
         private void LoadProperties()
         {
             try
             {
-                var list = _repository.GetAllByOwner(_currentUser.Id);
+                if (_currentUser == null) _currentUser = new User();
+                var list = _browseAll ? _repository.GetAll() : _repository.GetAllByOwner(_currentUser.Id);
                 BindProperties(list);
             }
             catch (Exception ex)
@@ -575,14 +792,10 @@ namespace BoardingHouseSys.Forms
             try
             {
                 dgvProperties.DataSource = list;
-
-                if (dgvProperties.Columns["OwnerId"] != null) dgvProperties.Columns["OwnerId"].Visible = false;
-                if (dgvProperties.Columns["IsActive"] != null) dgvProperties.Columns["IsActive"].Visible = false;
-                if (dgvProperties.Columns["CreatedAt"] != null) dgvProperties.Columns["CreatedAt"].Visible = false;
-                if (dgvProperties.Columns["OwnerName"] != null) dgvProperties.Columns["OwnerName"].Visible = false;
-                if (dgvProperties.Columns["ImagePath1"] != null) dgvProperties.Columns["ImagePath1"].Visible = false;
-                if (dgvProperties.Columns["ImagePath2"] != null) dgvProperties.Columns["ImagePath2"].Visible = false;
-                if (dgvProperties.Columns["ImagePath3"] != null) dgvProperties.Columns["ImagePath3"].Visible = false;
+                if (IsHandleCreated)
+                {
+                    BeginInvoke((Action)ApplyPropertiesGridColumns);
+                }
             }
             finally
             {
@@ -602,12 +815,182 @@ namespace BoardingHouseSys.Forms
 
             try
             {
-                var list = _repository.SearchByOwner(_currentUser.Id, keyword);
+                var list = _browseAll ? _repository.Search(keyword) : _repository.SearchByOwner(_currentUser.Id, keyword);
                 BindProperties(list);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error searching properties: " + ex.Message);
+            }
+        }
+
+        private void UpdateImageBoxes()
+        {
+            if (_selectedHouse == null)
+            {
+                ClearImageBoxes();
+                if (lblPicturesHint != null) lblPicturesHint.Visible = true;
+                return;
+            }
+
+            bool anyImage = false;
+
+            if (SetImageBox(pbImage1, _selectedHouse.ImagePath1)) anyImage = true;
+            if (SetImageBox(pbImage2, _selectedHouse.ImagePath2)) anyImage = true;
+            if (SetImageBox(pbImage3, _selectedHouse.ImagePath3)) anyImage = true;
+
+            if (lblPicturesHint != null) lblPicturesHint.Visible = !anyImage;
+        }
+
+        private void ClearImageBoxes()
+        {
+            if (pbImage1 != null) SetImageBox(pbImage1, null);
+            if (pbImage2 != null) SetImageBox(pbImage2, null);
+            if (pbImage3 != null) SetImageBox(pbImage3, null);
+            if (lblPicturesHint != null) lblPicturesHint.Visible = true;
+        }
+
+        private bool SetImageBox(PictureBox box, string? relativePath)
+        {
+            if (box == null) return false;
+
+            if (box.Image != null)
+            {
+                box.Image.Dispose();
+                box.Image = null;
+            }
+
+            if (string.IsNullOrWhiteSpace(relativePath)) return false;
+
+            string imagePath = Path.Combine(Application.StartupPath, relativePath);
+            if (!File.Exists(imagePath)) return false;
+
+            try
+            {
+                using (var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var temp = Image.FromStream(stream))
+                {
+                    box.Image = new Bitmap(temp);
+                    return true;
+                }
+            }
+            catch
+            {
+                if (box.Image != null)
+                {
+                    box.Image.Dispose();
+                    box.Image = null;
+                }
+            }
+            return false;
+        }
+
+        private void UploadImagesForProperty()
+        {
+            if (_selectedHouse == null)
+            {
+                MessageBox.Show("Please select a property first.");
+                return;
+            }
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Select Pictures";
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+                ofd.Multiselect = true;
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    var files = ofd.FileNames;
+                    string? img1 = _selectedHouse.ImagePath1;
+                    string? img2 = _selectedHouse.ImagePath2;
+                    string? img3 = _selectedHouse.ImagePath3;
+
+                    int fileIndex = 0;
+                    for (int slot = 1; slot <= 3 && fileIndex < files.Length; slot++)
+                    {
+                        string? savedPath = SaveBoardingHouseImage(files[fileIndex]);
+                        if (string.IsNullOrEmpty(savedPath))
+                        {
+                            fileIndex++;
+                            continue;
+                        }
+
+                        switch (slot)
+                        {
+                            case 1:
+                                img1 = savedPath;
+                                break;
+                            case 2:
+                                img2 = savedPath;
+                                break;
+                            case 3:
+                                img3 = savedPath;
+                                break;
+                        }
+
+                        fileIndex++;
+                    }
+
+                    _selectedHouse.ImagePath1 = img1;
+                    _selectedHouse.ImagePath2 = img2;
+                    _selectedHouse.ImagePath3 = img3;
+
+                    _repository.UpdateImages(
+                        _selectedHouse.Id,
+                        _selectedHouse.ImagePath1,
+                        _selectedHouse.ImagePath2,
+                        _selectedHouse.ImagePath3);
+
+                    UpdateImageBoxes();
+                }
+            }
+        }
+
+        private string? SaveBoardingHouseImage(string sourcePath)
+        {
+            if (string.IsNullOrEmpty(sourcePath)) return null;
+
+            try
+            {
+                string folderPath = Path.Combine(Application.StartupPath, "BoardingHousePictures");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(sourcePath);
+                string destPath = Path.Combine(folderPath, fileName);
+
+                File.Copy(sourcePath, destPath, true);
+
+                return "BoardingHousePictures/" + fileName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving image: " + ex.Message);
+                return null;
+            }
+        }
+
+        private void ShowImageFull(PictureBox source)
+        {
+            if (source == null || source.Image == null) return;
+
+            using (var form = new Form())
+            using (var viewer = new PictureBox())
+            {
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.WindowState = FormWindowState.Maximized;
+                form.BackColor = Color.Black;
+                form.Text = "Picture";
+
+                viewer.Dock = DockStyle.Fill;
+                viewer.SizeMode = PictureBoxSizeMode.Zoom;
+                viewer.Image = source.Image;
+
+                form.Controls.Add(viewer);
+                form.ShowDialog(this);
             }
         }
 
@@ -621,6 +1004,19 @@ namespace BoardingHouseSys.Forms
                 txtDescription.Text = _selectedHouse.Description;
                 txtRules.Text = _selectedHouse.Rules;
                 txtAmenities.Text = _selectedHouse.Amenities;
+
+                UpdateImageBoxes();
+
+                if (lblDetailSummary != null && _selectedHouse != null)
+                {
+                    string owner = string.IsNullOrWhiteSpace(_selectedHouse.OwnerName) ? "N/A" : _selectedHouse.OwnerName;
+                    string amenities = string.IsNullOrWhiteSpace(_selectedHouse.Amenities) ? "None" : _selectedHouse.Amenities;
+                    lblDetailSummary.Text =
+                        $"Name: {_selectedHouse.Name}\n" +
+                        $"Owner: {owner}\n" +
+                        $"Address: {_selectedHouse.Address}\n" +
+                        $"Amenities: {amenities}";
+                }
 
                 btnEdit.Enabled = true;
                 btnDelete.Enabled = true;
@@ -643,6 +1039,8 @@ namespace BoardingHouseSys.Forms
             txtDescription.Clear();
             txtRules.Clear();
             txtAmenities.Clear();
+            ClearImageBoxes();
+            if (lblDetailSummary != null) lblDetailSummary.Text = "Select a property to see summary.";
         }
 
         private void AddProperty()

@@ -5,61 +5,124 @@ namespace BoardingHouseSys.UI
 {
     public static class UITheme
     {
-        // Color Palette
-        public static Color PrimaryColor = Color.FromArgb(0, 123, 255);      // Blue
-        public static Color SecondaryColor = Color.FromArgb(108, 117, 125);   // Gray
-        public static Color SuccessColor = Color.FromArgb(40, 167, 69);       // Green
-        public static Color DangerColor = Color.FromArgb(220, 53, 69);        // Red
-        public static Color WarningColor = Color.FromArgb(255, 193, 7);        // Yellow
-        public static Color InfoColor = Color.FromArgb(23, 162, 184);          // Teal
-        public static Color LightColor = Color.FromArgb(248, 249, 250);       // Light Gray
-        public static Color DarkColor = Color.FromArgb(52, 58, 64);           // Dark Gray
+        // Color Palette - Dark Blue Theme (Enhanced)
+        public static Color PrimaryColor = Color.FromArgb(13, 71, 161);       // Deep Royal Blue
+        public static Color SecondaryColor = Color.FromArgb(69, 90, 100);     // Blue Grey
+        public static Color SuccessColor = Color.FromArgb(46, 125, 50);       // Dark Green
+        public static Color DangerColor = Color.FromArgb(198, 40, 40);        // Deep Red
+        public static Color WarningColor = Color.FromArgb(255, 143, 0);       // Dark Amber
+        public static Color InfoColor = Color.FromArgb(2, 119, 189);          // Ocean Blue
         
-        // Fonts
-        public static Font TitleFont = new Font("Segoe UI", 18, FontStyle.Bold);
-        public static Font HeaderFont = new Font("Segoe UI", 14, FontStyle.Bold);
-        public static Font NormalFont = new Font("Segoe UI", 11);
-        public static Font SmallFont = new Font("Segoe UI", 9);
+        public static Color LightColor = Color.FromArgb(236, 240, 241);       // Light Gray/Blue (Background)
+        public static Color DarkColor = Color.FromArgb(33, 33, 33);           // Almost Black (Text)
+        public static Color HeaderColor = Color.FromArgb(10, 25, 47);         // Midnight Blue (Header)
+        
+        // Modern Sidebar Palette
+        public static Color SidebarColor = Color.FromArgb(10, 25, 47);        // Midnight Blue
+        public static Color SidebarTextColor = Color.FromArgb(224, 247, 250); // Very Light Cyan/Blue Text
+        public static Color SidebarActiveColor = Color.FromArgb(21, 101, 192);  // Brighter Blue for active
+        public static Color SidebarHoverColor = Color.FromArgb(25, 118, 210);   // Hover Blue
+        public static Color AccentColor = Color.FromArgb(0, 150, 136);        // Teal Accent
+
+        // Fonts - Increased Sizes
+        public static Font TitleFont = new Font("Segoe UI", 20, FontStyle.Bold);
+        public static Font HeaderFont = new Font("Segoe UI", 16, FontStyle.Bold);
+        public static Font NormalFont = new Font("Segoe UI", 12);
+        public static Font SmallFont = new Font("Segoe UI", 10);
         
         // Button Styles
-        public static void ApplyButtonStyle(Button button, Color bgColor, int width = 120, int height = 40)
+        public static void ApplyButtonStyle(Button button, int width = 140, int height = 40)
+        {
+            // Use the button's current background color
+            ApplyButtonStyle(button, button.BackColor, width, height);
+        }
+
+        public static void ApplyButtonStyle(Button button, Color bgColor, int width = 140, int height = 40)
         {
             button.BackColor = bgColor;
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
             button.ForeColor = Color.White;
-            button.Font = NormalFont;
+            button.Font = new Font("Segoe UI", 11, FontStyle.Bold); // Bold for better visibility
             button.Size = new Size(width, height);
             button.UseVisualStyleBackColor = false;
+            button.Cursor = Cursors.Hand;
             
+            // Remove existing handlers to prevent stacking
+            button.MouseEnter -= Button_MouseEnter;
+            button.MouseLeave -= Button_MouseLeave;
+
             // Hover effects
-            button.MouseEnter += (s, e) => 
+            button.MouseEnter += Button_MouseEnter;
+            button.MouseLeave += Button_MouseLeave;
+        }
+
+        private static void Button_MouseEnter(object? sender, EventArgs e)
+        {
+            if (sender is Button btn)
             {
-                button.BackColor = ControlPaint.Light(bgColor, 0.1f);
-            };
-            
-            button.MouseLeave += (s, e) => 
-            {
-                button.BackColor = bgColor;
-            };
+                btn.BackColor = ControlPaint.Light(btn.BackColor, 0.1f);
+            }
+        }
+
+        private static void Button_MouseLeave(object? sender, EventArgs e)
+        {
+             // This simple logic might fail if we don't store original color.
+             // For general buttons, we assume the current color is the base color (or close enough).
+             // A better approach for general buttons is to store the base color in the Tag or similar, 
+             // but strictly speaking, ControlPaint.Light creates a NEW color.
+             // So when we leave, we need to revert.
+             // Given the limitations, let's just darken it back or use the predefined colors if possible.
+             // To be safe and simple: specific button types call Apply... again which sets the color.
+             // But for hover, we need a generic revert.
+             
+             if (sender is Button btn)
+             {
+                 // Check against known palette to revert correctly
+                 if (IsColorSimilar(btn.BackColor, PrimaryColor)) btn.BackColor = PrimaryColor;
+                 else if (IsColorSimilar(btn.BackColor, SecondaryColor)) btn.BackColor = SecondaryColor;
+                 else if (IsColorSimilar(btn.BackColor, SuccessColor)) btn.BackColor = SuccessColor;
+                 else if (IsColorSimilar(btn.BackColor, DangerColor)) btn.BackColor = DangerColor;
+                 else if (IsColorSimilar(btn.BackColor, WarningColor)) btn.BackColor = WarningColor;
+                 else if (IsColorSimilar(btn.BackColor, InfoColor)) btn.BackColor = InfoColor;
+                 else 
+                 {
+                     // Fallback: Darken it back
+                     btn.BackColor = ControlPaint.Dark(btn.BackColor, 0.1f); // Rough approximation
+                 }
+             }
+        }
+
+        private static bool IsColorSimilar(Color c1, Color c2)
+        {
+             // Allow for slight floating point diffs from Light/Dark ops
+             return Math.Abs(c1.R - c2.R) < 30 && Math.Abs(c1.G - c2.G) < 30 && Math.Abs(c1.B - c2.B) < 30;
         }
         
-        public static void ApplyPrimaryButton(Button button, int width = 120, int height = 40)
+        public static void ApplyPrimaryButton(Button button, int width = 140, int height = 40)
         {
             ApplyButtonStyle(button, PrimaryColor, width, height);
+            // Explicitly set Tag for easier color restoration if we wanted to get fancy, 
+            // but the IsColorSimilar approach above is robust enough for simple hovers.
         }
         
-        public static void ApplySecondaryButton(Button button, int width = 120, int height = 40)
+        public static void ApplySecondaryButton(Button button, int width = 140, int height = 40)
         {
             ApplyButtonStyle(button, SecondaryColor, width, height);
         }
+
+        public static void ApplyNavButton(Button button, int width = 100, int height = 35)
+        {
+            ApplyButtonStyle(button, SecondaryColor, width, height);
+            button.Font = SmallFont;
+        }
         
-        public static void ApplySuccessButton(Button button, int width = 120, int height = 40)
+        public static void ApplySuccessButton(Button button, int width = 140, int height = 40)
         {
             ApplyButtonStyle(button, SuccessColor, width, height);
         }
         
-        public static void ApplyDangerButton(Button button, int width = 120, int height = 40)
+        public static void ApplyDangerButton(Button button, int width = 140, int height = 40)
         {
             ApplyButtonStyle(button, DangerColor, width, height);
         }
@@ -71,6 +134,29 @@ namespace BoardingHouseSys.UI
             textBox.BorderStyle = BorderStyle.FixedSingle;
             textBox.Font = NormalFont;
             textBox.ForeColor = DarkColor;
+        }
+
+        public static void ApplyNumericUpDownStyle(NumericUpDown nud)
+        {
+            nud.BackColor = Color.White;
+            nud.BorderStyle = BorderStyle.FixedSingle;
+            nud.Font = NormalFont;
+            nud.ForeColor = DarkColor;
+        }
+
+        public static void ApplyComboBoxStyle(ComboBox comboBox)
+        {
+            comboBox.BackColor = Color.White;
+            comboBox.Font = NormalFont;
+            comboBox.ForeColor = DarkColor;
+            comboBox.FlatStyle = FlatStyle.Flat; 
+        }
+
+        public static void ApplyGroupBoxStyle(GroupBox groupBox)
+        {
+            groupBox.Font = new Font(NormalFont, FontStyle.Bold);
+            groupBox.ForeColor = PrimaryColor;
+            groupBox.BackColor = Color.White;
         }
         
         // Label Styles
@@ -85,16 +171,36 @@ namespace BoardingHouseSys.UI
             label.Font = HeaderFont;
             label.ForeColor = PrimaryColor;
         }
+
+        public static void ApplyTitleLabelStyle(Label label)
+        {
+            label.Font = TitleFont;
+            label.ForeColor = PrimaryColor;
+        }
+
+        public static void ApplySubHeaderLabelStyle(Label label)
+        {
+             label.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+             label.ForeColor = SecondaryColor;
+        }
         
         // Form Styles
         public static void ApplyFormStyle(Form form)
         {
-            form.BackColor = Color.White;
+            form.BackColor = LightColor; // Use the light blue/gray background
             form.Font = NormalFont;
             form.StartPosition = FormStartPosition.CenterScreen;
+            form.ForeColor = DarkColor;
         }
         
         // Panel Styles
+        public static void ApplyHeaderStyle(Panel panel)
+        {
+            panel.BackColor = HeaderColor;
+            panel.ForeColor = Color.White;
+            panel.Padding = new Padding(10);
+        }
+
         public static void ApplyPanelStyle(Panel panel, Color? backgroundColor = null)
         {
             panel.BackColor = backgroundColor ?? LightColor;
@@ -102,19 +208,86 @@ namespace BoardingHouseSys.UI
             panel.Padding = new Padding(10);
         }
         
+        public static void ApplySidebarButtonStyle(Button button, bool isActive = false)
+        {
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderSize = 0;
+            button.BackColor = isActive ? SidebarActiveColor : SidebarColor;
+            button.ForeColor = isActive ? Color.White : SidebarTextColor;
+            button.Font = new Font("Segoe UI", 12F, isActive ? FontStyle.Bold : FontStyle.Regular); // Increased font size
+            button.TextAlign = ContentAlignment.MiddleLeft;
+            button.Padding = new Padding(20, 0, 0, 0); // Increased padding
+            button.Size = new Size(220, 60); // Adjusted width to fit 240px sidebar with padding
+            button.Cursor = Cursors.Hand;
+
+            // Border for active state (Left accent bar)
+            if (isActive)
+            {
+                button.FlatAppearance.BorderColor = SidebarColor; // Hide default border
+            }
+
+            // Remove existing handlers
+            button.MouseEnter -= SidebarButton_MouseEnter;
+            button.MouseLeave -= SidebarButton_MouseLeave;
+
+            // Add handlers
+            button.MouseEnter += SidebarButton_MouseEnter;
+            button.MouseLeave += SidebarButton_MouseLeave;
+        }
+
+        private static void SidebarButton_MouseEnter(object? sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                if (btn.BackColor != SidebarActiveColor) 
+                    btn.BackColor = SidebarHoverColor;
+            }
+        }
+
+        private static void SidebarButton_MouseLeave(object? sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                // Only revert if it's currently in hover state
+                if (btn.BackColor == SidebarHoverColor) 
+                    btn.BackColor = SidebarColor;
+            }
+        }
+
         // DataGridView Styles
         public static void ApplyDataGridViewStyle(DataGridView gridView)
         {
             gridView.BackgroundColor = LightColor;
             gridView.BorderStyle = BorderStyle.None;
             gridView.EnableHeadersVisualStyles = false;
+            
+            // Header Style
             gridView.ColumnHeadersDefaultCellStyle.BackColor = PrimaryColor;
             gridView.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            gridView.ColumnHeadersDefaultCellStyle.Font = new Font(NormalFont, FontStyle.Bold);
+            gridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11F, FontStyle.Bold); // Slightly larger header
+            gridView.ColumnHeadersHeight = 45; // Taller header
+            gridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
             gridView.RowHeadersVisible = false;
-            gridView.DefaultCellStyle.Font = NormalFont;
-            gridView.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
+            
+            // Cell Style
+            gridView.DefaultCellStyle.Font = new Font("Segoe UI", 11F); // Comfortable font size
+            gridView.DefaultCellStyle.BackColor = Color.White;
+            gridView.DefaultCellStyle.ForeColor = DarkColor;
+            gridView.DefaultCellStyle.SelectionBackColor = Color.FromArgb(21, 101, 192); // SidebarActiveColor (Brighter than Primary)
+            gridView.DefaultCellStyle.SelectionForeColor = Color.White;
+            gridView.DefaultCellStyle.Padding = new Padding(5); // Internal cell padding
+            
+            // Grid Lines
+            gridView.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            gridView.GridColor = Color.FromArgb(224, 224, 224); // Light gray lines
+            
+            // Row Style
+            gridView.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 247, 250); // Very light blue-gray
+            gridView.RowTemplate.Height = 40; // Taller rows for better readability
+            
             gridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            gridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         }
     }
 }

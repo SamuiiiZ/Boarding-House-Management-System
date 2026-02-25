@@ -45,12 +45,13 @@ namespace BoardingHouseSys.Forms
         private System.Windows.Forms.Label lblHistory;
         private System.Windows.Forms.DataGridView dgvHistory;
         private System.Windows.Forms.FlowLayoutPanel actionPanel;
-        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button btnPayRent;
 
         // Parameterless constructor for Designer support
         public FormBoarderDetails()
         {
             InitializeComponent();
+            UITheme.ApplyFormStyle(this);
             WireEvents();
             _currentUser = new User();
             _boarderRepo = new BoarderRepository();
@@ -60,6 +61,7 @@ namespace BoardingHouseSys.Forms
         public FormBoarderDetails(User user)
         {
             InitializeComponent();
+            UITheme.ApplyFormStyle(this);
             WireEvents();
             
             _currentUser = user;
@@ -67,6 +69,21 @@ namespace BoardingHouseSys.Forms
             _paymentRepo = new PaymentRepository();
             
             LoadDetails();
+            ApplyTheme();
+        }
+        
+        private void ApplyTheme()
+        {
+             UITheme.ApplyHeaderStyle(pnlTop);
+             UITheme.ApplyPanelStyle(infoPanel);
+             
+             UITheme.ApplyGroupBoxStyle(grpInfo);
+             
+             UITheme.ApplyNavButton(btnBackTop, 180, 30);
+             UITheme.ApplyButtonStyle(btnUploadPhoto);
+             UITheme.ApplyButtonStyle(btnPayRent);
+             
+             UITheme.ApplyDataGridViewStyle(dgvHistory);
         }
 
         protected override void Dispose(bool disposing)
@@ -104,7 +121,6 @@ namespace BoardingHouseSys.Forms
             dgvHistory = new DataGridView();
             lblHistory = new Label();
             actionPanel = new FlowLayoutPanel();
-            btnClose = new Button();
             pnlTop.SuspendLayout();
             mainLayout.SuspendLayout();
             grpInfo.SuspendLayout();
@@ -384,7 +400,7 @@ namespace BoardingHouseSys.Forms
             // 
             // actionPanel
             // 
-            actionPanel.Controls.Add(btnClose);
+            actionPanel.Controls.Add(btnPayRent);
             actionPanel.Dock = DockStyle.Fill;
             actionPanel.FlowDirection = FlowDirection.RightToLeft;
             actionPanel.Location = new Point(487, 683);
@@ -392,18 +408,19 @@ namespace BoardingHouseSys.Forms
             actionPanel.Size = new Size(690, 44);
             actionPanel.TabIndex = 3;
             // 
-            // btnClose
+            // btnPayRent
             // 
-            btnClose.BackColor = Color.LightSlateGray;
-            btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnClose.ForeColor = Color.White;
-            btnClose.Location = new Point(487, 3);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(200, 40);
-            btnClose.TabIndex = 0;
-            btnClose.Text = "Back to Dashboard";
-            btnClose.UseVisualStyleBackColor = false;
+            btnPayRent = new Button();
+            btnPayRent.BackColor = UITheme.SuccessColor;
+            btnPayRent.FlatStyle = FlatStyle.Flat;
+            btnPayRent.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnPayRent.ForeColor = Color.White;
+            btnPayRent.Location = new Point(281, 3);
+            btnPayRent.Name = "btnPayRent";
+            btnPayRent.Size = new Size(200, 40);
+            btnPayRent.TabIndex = 1;
+            btnPayRent.Text = "Record Payment";
+            btnPayRent.UseVisualStyleBackColor = false;
             // 
             // FormBoarderDetails
             // 
@@ -430,9 +447,123 @@ namespace BoardingHouseSys.Forms
 
         private void WireEvents()
         {
-            this.btnClose.Click += (s, e) => this.Close();
             this.btnBackTop.Click += (s, e) => this.Close();
             this.btnUploadPhoto.Click += BtnUploadPhoto_Click;
+            this.btnPayRent.Click += BtnPayRent_Click;
+        }
+
+        private void BtnPayRent_Click(object? sender, EventArgs e)
+        {
+            if (_currentBoarderId == 0)
+            {
+                MessageBox.Show("Boarder not loaded.");
+                return;
+            }
+
+            // Create a simple dialog form
+            Form payForm = new Form();
+            payForm.Text = "Record Payment";
+            payForm.Size = new Size(400, 350);
+            payForm.StartPosition = FormStartPosition.CenterParent;
+            UITheme.ApplyFormStyle(payForm);
+
+            int y = 20;
+            
+            Label lblAmount = new Label();
+            lblAmount.Text = "Amount:";
+            lblAmount.Location = new Point(20, y);
+            payForm.Controls.Add(lblAmount);
+
+            TextBox txtAmount = new TextBox();
+            txtAmount.Location = new Point(120, y);
+            txtAmount.Text = lblRentVal.Text.Replace("$", "").Replace(",", "").Trim(); // Pre-fill with rent
+            payForm.Controls.Add(txtAmount);
+            y += 40;
+
+            Label lblDate = new Label();
+            lblDate.Text = "Date:";
+            lblDate.Location = new Point(20, y);
+            payForm.Controls.Add(lblDate);
+
+            DateTimePicker dtpDate = new DateTimePicker();
+            dtpDate.Location = new Point(120, y);
+            dtpDate.Format = DateTimePickerFormat.Short;
+            payForm.Controls.Add(dtpDate);
+            y += 40;
+
+            Label lblMonth = new Label();
+            lblMonth.Text = "Month:";
+            lblMonth.Location = new Point(20, y);
+            payForm.Controls.Add(lblMonth);
+
+            ComboBox cmbMonth = new ComboBox();
+            cmbMonth.Location = new Point(120, y);
+            cmbMonth.Items.AddRange(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames);
+            cmbMonth.SelectedItem = DateTime.Now.ToString("MMMM");
+            payForm.Controls.Add(cmbMonth);
+            y += 40;
+
+            Label lblYear = new Label();
+            lblYear.Text = "Year:";
+            lblYear.Location = new Point(20, y);
+            payForm.Controls.Add(lblYear);
+
+            NumericUpDown nudYear = new NumericUpDown();
+            nudYear.Location = new Point(120, y);
+            nudYear.Minimum = 2000;
+            nudYear.Maximum = 2100;
+            nudYear.Value = DateTime.Now.Year;
+            payForm.Controls.Add(nudYear);
+            y += 40;
+            
+            Label lblNotes = new Label();
+            lblNotes.Text = "Notes:";
+            lblNotes.Location = new Point(20, y);
+            payForm.Controls.Add(lblNotes);
+
+            TextBox txtNotes = new TextBox();
+            txtNotes.Location = new Point(120, y);
+            payForm.Controls.Add(txtNotes);
+            y += 50;
+
+            Button btnSave = new Button();
+            btnSave.Text = "Save Payment";
+            UITheme.ApplySuccessButton(btnSave, 150);
+            btnSave.Location = new Point(120, y);
+            btnSave.Click += (s2, e2) =>
+            {
+                try
+                {
+                    if (!decimal.TryParse(txtAmount.Text, out decimal amount))
+                    {
+                        MessageBox.Show("Invalid Amount");
+                        return;
+                    }
+
+                    Payment p = new Payment
+                    {
+                        BoarderId = _currentBoarderId,
+                        Amount = amount,
+                        PaymentDate = dtpDate.Value,
+                        MonthPaid = cmbMonth.SelectedItem?.ToString() ?? DateTime.Now.ToString("MMMM"),
+                        YearPaid = (int)nudYear.Value,
+                        Status = "Paid",
+                        Notes = txtNotes.Text
+                    };
+
+                    _paymentRepo.AddPayment(p);
+                    MessageBox.Show("Payment Recorded!");
+                    payForm.Close();
+                    LoadHistory(_currentBoarderId); // Refresh grid
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            };
+            payForm.Controls.Add(btnSave);
+
+            payForm.ShowDialog();
         }
 
         private void BtnUploadPhoto_Click(object? sender, EventArgs e)

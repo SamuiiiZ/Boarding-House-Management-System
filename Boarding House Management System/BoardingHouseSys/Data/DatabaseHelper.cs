@@ -7,10 +7,17 @@ namespace BoardingHouseSys.Data
     public class DatabaseHelper
     {
         // Default MySQL connection string
-        private string _connectionString = "Server=localhost;Database=BoardingHouseDB;Uid=root;Pwd=root;"; 
+        private static string _globalConnectionString = "Server=localhost;Database=BoardingHouseDB;Uid=root;Pwd=root;"; 
+        private string _connectionString;
+
+        public static void SetConnectionString(string connString)
+        {
+            _globalConnectionString = connString;
+        }
 
         public DatabaseHelper()
         {
+            _connectionString = _globalConnectionString;
         }
 
         public DatabaseHelper(string connectionString)

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "X128autsZmI=",
+  "dgSpecHash": "jdsTBmhNSoo=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ryane\\Downloads\\Boarding-House-Management-System-main\\Boarding-House-Management-System-main\\Boarding House Management System\\BoardingHouseSys\\BoardingHouseSys.csproj",
+  "projectFilePath": "C:\\Users\\ryane\\Downloads\\Boarding-House-Management-System-main (1)\\Boarding-House-Management-System-main\\Boarding House Management System\\BoardingHouseSys\\BoardingHouseSys.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ryane\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",
     "C:\\Users\\ryane\\.nuget\\packages\\google.protobuf\\3.32.0\\google.protobuf.3.32.0.nupkg.sha512",
