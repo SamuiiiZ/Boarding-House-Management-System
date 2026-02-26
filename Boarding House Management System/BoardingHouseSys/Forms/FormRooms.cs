@@ -551,7 +551,8 @@ namespace BoardingHouseSys.Forms
 
         private void HideDetailsPanel()
         {
-            if (grpInput != null) grpInput.Visible = false;
+            // Keep details panel visible so Add button is always accessible
+            if (grpInput != null) grpInput.Visible = true;
             if (btnUpdate != null) btnUpdate.Enabled = false;
             if (btnDelete != null) btnDelete.Enabled = false;
         }

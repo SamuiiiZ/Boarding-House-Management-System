@@ -129,7 +129,10 @@ namespace BoardingHouseSys.Forms
             if (lblDescription != null) UITheme.ApplyLabelStyle(lblDescription, true);
             if (lblRules != null) UITheme.ApplyLabelStyle(lblRules, true);
             if (lblAmenities != null) UITheme.ApplyLabelStyle(lblAmenities, true);
-            if (lblPictures != null) UITheme.ApplySubHeaderLabelStyle(lblPictures);
+            // Pictures section is redundant with Boarding Houses screen; hide it
+            if (lblPictures != null) lblPictures.Visible = false;
+            if (pnlImages != null) pnlImages.Visible = false;
+            if (pnlImageActions != null) pnlImageActions.Visible = false;
             if (lblDetailSummaryTitle != null) UITheme.ApplySubHeaderLabelStyle(lblDetailSummaryTitle);
             if (lblDetailSummary != null) lblDetailSummary.ForeColor = UITheme.DarkColor;
         }
@@ -357,11 +360,9 @@ namespace BoardingHouseSys.Forms
             tableLayout.Controls.Add(lblAmenities, 0, 8);
             tableLayout.Controls.Add(txtAmenities, 0, 9);
             tableLayout.Controls.Add(lblName, 0, 0);
-            tableLayout.Controls.Add(lblPictures, 0, 10);
-            tableLayout.Controls.Add(pnlImages, 0, 11);
-            tableLayout.Controls.Add(pnlImageActions, 0, 12);
-            tableLayout.Controls.Add(lblDetailSummaryTitle, 0, 13);
-            tableLayout.Controls.Add(lblDetailSummary, 0, 14);
+            // Picture controls removed from layout (redundant with Boarding Houses screen)
+            tableLayout.Controls.Add(lblDetailSummaryTitle, 0, 10);
+            tableLayout.Controls.Add(lblDetailSummary, 0, 11);
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.Location = new Point(14, 28);
             tableLayout.Margin = new Padding(2);
