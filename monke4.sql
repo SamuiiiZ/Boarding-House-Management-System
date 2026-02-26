@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: boardinghousedb
+-- Host: localhost    Database: boardinghousedb
 -- ------------------------------------------------------
--- Server version	8.0.36
+-- Server version	8.0.44
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -40,7 +40,7 @@ CREATE TABLE `boarders` (
   CONSTRAINT `boarders_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `users` (`Id`),
   CONSTRAINT `boarders_ibfk_2` FOREIGN KEY (`RoomId`) REFERENCES `rooms` (`Id`),
   CONSTRAINT `boarders_ibfk_3` FOREIGN KEY (`BoardingHouseId`) REFERENCES `boardinghouses` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +49,7 @@ CREATE TABLE `boarders` (
 
 LOCK TABLES `boarders` WRITE;
 /*!40000 ALTER TABLE `boarders` DISABLE KEYS */;
-INSERT INTO `boarders` VALUES (1,3,'Rodz Cachero','Malalag','12345678901',1,_binary '\0','2026-01-28 17:13:51',1,NULL),(2,4,'Keith Onel Fuentes','Barayong, Magsaysay','12345678902',7,_binary '','2026-01-28 17:19:19',4,'ProfilePictures/c25b52a8-d7a5-4293-bcfc-05a4745b9a19.jpg'),(3,6,'Chrollo','Padada','12345678901',2,_binary '','2026-02-01 22:04:27',1,NULL),(4,NULL,'rodz','Malalag','12345678901',5,_binary '','2026-02-02 14:07:04',1,'ProfilePictures/21404ce6-dcec-4e28-ba15-63d3b92a0638.jpg'),(5,7,'Keith Onel Fuentes','Barayong, Magsaysay','1234567891-',1,_binary '\0','2026-02-04 22:19:04',NULL,'ProfilePictures/d1276d51-909a-4bff-8be8-37d4857040bf.jpg'),(6,11,'maggie','magsaysay','123456789010',8,_binary '','2026-02-09 14:26:16',6,'ProfilePictures/126f4fa6-3c71-413c-9c18-6e12393df8b7.jpg'),(7,12,'klyde','123','12345678910',8,_binary '','2026-02-09 14:28:36',6,'ProfilePictures/9f46879e-c67c-43f1-bf6c-02191cfcd1ff.jpg');
+INSERT INTO `boarders` VALUES (1,4,'Keith Fuentes','Magsaysay Barayong','123456789101',6,_binary '','2026-02-16 12:03:16',2,'ProfilePictures/9091c970-b62a-4b30-ab99-b05b18808fd0.jpg'),(2,5,'rodz','Malalag','123456789101',7,_binary '','2026-02-18 11:17:34',2,'ProfilePictures/380fb5db-2665-42b8-8398-ee876afb8306.jpg');
 /*!40000 ALTER TABLE `boarders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -76,7 +76,7 @@ CREATE TABLE `boardinghouses` (
   PRIMARY KEY (`Id`),
   KEY `OwnerId` (`OwnerId`),
   CONSTRAINT `boardinghouses_ibfk_1` FOREIGN KEY (`OwnerId`) REFERENCES `users` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -85,7 +85,7 @@ CREATE TABLE `boardinghouses` (
 
 LOCK TABLES `boardinghouses` WRITE;
 /*!40000 ALTER TABLE `boardinghouses` DISABLE KEYS */;
-INSERT INTO `boardinghouses` VALUES (1,1,'My Main Boarding House','Default Address','Main Property',NULL,NULL,_binary '','2026-02-04 21:38:29',NULL,NULL,NULL),(2,2,'Alisoso BH','HV Tablizo Matti Digos City','warm, cozy comfy','no boys and girl on a same room, curfew hours 9:00 pm','safe. clean, and fast internet',_binary '\0','2026-02-04 22:17:15',NULL,NULL,NULL),(3,10,'Alisoso BH','HV Tablizo Street','comfy, cozy affordable.','curfew 10 pm','fast internet, cozy, 4 per person rooms for 1k, and 2 per person room for 4k',_binary '\0','2026-02-05 01:28:41',NULL,NULL,NULL),(4,10,'Alisoso BH','HV Tablizo Street','comfy, cozy affordable.','curfew 10 pm','fast internet, cozy, 4 per person rooms for 1k, and 2 per person room for 4k',_binary '','2026-02-05 01:28:58','BoardingHousePictures/6ce6957a-17cb-46a4-9c5f-739e7ec406a1.jpg','BoardingHousePictures/7e41a97a-1e7c-485e-9714-d7b5ee04d778.jpg','BoardingHousePictures/f79f6ca5-7fe1-4798-af8a-0a47449bcf8d.jpg'),(5,10,'Alisoso BH','HV Tablizo Street','comfy, cozy affordable.','curfew 10 pm','fast internet, cozy, 4 per person rooms for 1k, and 2 per person room for 4k',_binary '\0','2026-02-05 20:49:24',NULL,NULL,NULL),(6,2,'Aj BH','Matti Digos City','Cozy, and affordable','No rules','High speed wifi, Owning like your own house, comfortable',_binary '','2026-02-05 21:57:30',NULL,NULL,NULL),(7,10,'My Main Boarding House','Default Address','Main Property','','',_binary '\0','2026-02-09 14:16:11',NULL,NULL,NULL),(8,1,'Alisoso BH','HV Tablizo Street','comfy, cozy affordable.','curfew 10 pm','fast internet, cozy, 4 per person rooms for 1k, and 2 per person room for 4k',_binary '\0','2026-02-11 22:18:38',NULL,NULL,NULL);
+INSERT INTO `boardinghouses` VALUES (1,1,'My Main Boarding House','Default Address','Main Property',NULL,NULL,_binary '\0','2026-02-16 11:45:20',NULL,NULL,NULL),(2,3,'Alisoso BH','HBV TABLIZO ST, MATI DIGOS CITY','Boarding House at affordable price','9 pm curfew, no pets allowed(bois)','Fast internet, cozy, friendly environment',_binary '','2026-02-16 11:47:16','BoardingHousePictures/01b5c124-7371-4d7d-82cc-96fc93922331.jpg','BoardingHousePictures/277c2857-74a6-413d-9308-b99136b9861e.jpg','BoardingHousePictures/6474cb4b-d7e3-476c-b9d5-d4676e11a3e5.jpg'),(3,3,'Alisoso BH','HBV TABLIZO ST, MATI DIGOS CITY','Boarding House at affordable price','9 pm curfew, no pets allowed(bois)','Fast internet, cozy, friendly environment',_binary '\0','2026-02-22 17:54:27',NULL,NULL,NULL),(4,3,'Alisoso BH','HBV TABLIZO ST, MATI DIGOS CITY','Boarding House at affordable price','9 pm curfew, no pets allowed(bois)','Fast internet, cozy, friendly environment',_binary '\0','2026-02-22 19:00:45',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `boardinghouses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,7 +107,7 @@ CREATE TABLE `expenses` (
   PRIMARY KEY (`Id`),
   KEY `BoardingHouseId` (`BoardingHouseId`),
   CONSTRAINT `expenses_ibfk_1` FOREIGN KEY (`BoardingHouseId`) REFERENCES `boardinghouses` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,7 +116,6 @@ CREATE TABLE `expenses` (
 
 LOCK TABLES `expenses` WRITE;
 /*!40000 ALTER TABLE `expenses` DISABLE KEYS */;
-INSERT INTO `expenses` VALUES (1,'Payment nimo dae','paying date',8000.00,'2026-02-02 14:09:35','Other',1);
 /*!40000 ALTER TABLE `expenses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,7 +147,7 @@ CREATE TABLE `payments` (
 
 LOCK TABLES `payments` WRITE;
 /*!40000 ALTER TABLE `payments` DISABLE KEYS */;
-INSERT INTO `payments` VALUES (1,2,2000.00,'2026-01-30 00:37:11','January',2026,'Pending','bayaran ka'),(2,1,100000.00,'2026-01-30 10:23:46','January',2026,'Paid','datoa nimo dol oi I love you'),(3,2,1000.00,'2026-02-11 22:11:26','February',2026,'Pending','bayad choi');
+INSERT INTO `payments` VALUES (1,1,1000.00,'2026-02-17 11:43:50','February',2026,'Pending','bayari napud'),(2,1,1000.00,'2026-02-17 11:51:19','February',2026,'Pending','hoy ting bayad na'),(3,2,1000.00,'2026-02-18 11:17:42','February',2025,'Pending','bayad nimo ron');
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,7 +167,7 @@ CREATE TABLE `rooms` (
   `CreatedAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `BoardingHouseId` int DEFAULT NULL,
   PRIMARY KEY (`Id`),
-  UNIQUE KEY `RoomNumber` (`RoomNumber`),
+  UNIQUE KEY `UX_Rooms_BH_Room` (`BoardingHouseId`,`RoomNumber`),
   KEY `BoardingHouseId` (`BoardingHouseId`),
   CONSTRAINT `rooms_ibfk_1` FOREIGN KEY (`BoardingHouseId`) REFERENCES `boardinghouses` (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -180,7 +179,7 @@ CREATE TABLE `rooms` (
 
 LOCK TABLES `rooms` WRITE;
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
-INSERT INTO `rooms` VALUES (1,'101',2,3500.00,_binary '','2026-01-28 16:55:58',1),(2,'102',2,3500.00,_binary '','2026-01-28 16:55:58',1),(3,'201',1,8000.00,_binary '','2026-01-28 16:55:59',1),(4,'103',2,3500.00,_binary '','2026-02-01 22:38:48',1),(5,'202',1,8000.00,_binary '','2026-02-01 22:39:08',1),(7,'401',4,1000.00,_binary '','2026-02-05 22:50:13',4),(8,'501',4,1000.00,_binary '','2026-02-05 23:38:52',6);
+INSERT INTO `rooms` VALUES (1,'101',2,5000.00,_binary '','2026-02-16 11:42:24',1),(2,'102',4,3500.00,_binary '','2026-02-16 11:42:24',1),(3,'201',1,8000.00,_binary '','2026-02-16 11:42:24',1),(6,'501',4,1000.00,_binary '','2026-02-16 12:08:04',2),(7,'101',4,1000.00,_binary '','2026-02-16 12:13:36',2),(8,'102',4,1000.00,_binary '','2026-02-19 21:30:19',2);
 /*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -200,7 +199,7 @@ CREATE TABLE `users` (
   `CreatedAt` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `Username` (`Username`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,7 +208,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'superadmin','240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9','SuperAdmin',_binary '','2026-01-28 16:55:58'),(2,'admin','240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9','Admin',_binary '','2026-01-28 16:55:58'),(3,'rodz','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Boarder',_binary '','2026-01-28 17:13:51'),(4,'keith','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Boarder',_binary '','2026-01-28 17:19:19'),(5,'john','03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4','Admin',_binary '\0','2026-01-30 10:02:37'),(6,'chrollo','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Boarder',_binary '','2026-02-01 22:04:27'),(7,'keith1','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Boarder',_binary '','2026-02-04 22:19:04'),(8,'BlueInn','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Admin',_binary '','2026-02-05 01:25:41'),(9,'kurbada','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Admin',_binary '','2026-02-05 01:26:19'),(10,'alisoso','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Admin',_binary '','2026-02-05 01:27:04'),(11,'maggie','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Boarder',_binary '','2026-02-09 14:26:16'),(12,'klyde','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Boarder',_binary '','2026-02-09 14:28:36');
+INSERT INTO `users` VALUES (1,'superadmin','240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9','SuperAdmin',_binary '','2026-02-16 11:42:24'),(2,'admin','240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9','Admin',_binary '','2026-02-16 11:42:24'),(3,'alisoso','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Admin',_binary '','2026-02-16 11:45:52'),(4,'keith','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Boarder',_binary '','2026-02-16 12:03:16'),(5,'rodz','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Boarder',_binary '','2026-02-18 11:17:34');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -222,4 +221,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-16 11:32:31
+-- Dump completed on 2026-02-26 17:57:39
