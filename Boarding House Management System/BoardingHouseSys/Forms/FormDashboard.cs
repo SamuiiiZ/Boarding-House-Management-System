@@ -77,6 +77,9 @@ namespace BoardingHouseSys.Forms
         private System.Windows.Forms.FlowLayoutPanel pnlImageActions;
         private System.Windows.Forms.Button btnUploadImages;
         private System.Windows.Forms.Label lblImageHint;
+        private System.Windows.Forms.RadioButton rbSlot1;
+        private System.Windows.Forms.RadioButton rbSlot2;
+        private System.Windows.Forms.RadioButton rbSlot3;
         private int _selectedImageSlot = 1;
         private System.Windows.Forms.PictureBox pbRoomPreview;
         private Label lblWelcome;
@@ -89,7 +92,11 @@ namespace BoardingHouseSys.Forms
         private System.Windows.Forms.Label lblRoomPreview;
         private Panel pnlDetailActions;
         private System.Windows.Forms.Label lblDetailSummaryTitle;
-        private System.Windows.Forms.Label lblDetailSummary;
+        private System.Windows.Forms.TableLayoutPanel tblSummary;
+        private System.Windows.Forms.Label lblSumNameVal;
+        private System.Windows.Forms.Label lblSumOwnerVal;
+        private System.Windows.Forms.Label lblSumAddressVal;
+        private System.Windows.Forms.Label lblSumAmenitiesVal;
         private System.Windows.Forms.Timer? _searchDebounce;
         private string _pendingSearchText = string.Empty;
         private bool _isUpdatingResults;
@@ -150,8 +157,7 @@ namespace BoardingHouseSys.Forms
             if (lblDetailsTitle != null) UITheme.ApplyHeaderLabelStyle(lblDetailsTitle);
             if (lblDetailsHint != null) UITheme.ApplyLabelStyle(lblDetailsHint);
             if (lblDetailSummaryTitle != null) UITheme.ApplySubHeaderLabelStyle(lblDetailSummaryTitle);
-            if (lblDetailSummary != null) lblDetailSummary.ForeColor = UITheme.DarkColor;
-
+            
             if (btnUploadImages != null) UITheme.ApplySuccessButton(btnUploadImages);
 
             if (btnLogout != null)
@@ -220,12 +226,19 @@ namespace BoardingHouseSys.Forms
             panelDetails = new Panel();
             pnlDetailActions = new Panel();
             lblDetailSummaryTitle = new Label();
-            lblDetailSummary = new Label();
+            tblSummary = new TableLayoutPanel();
+            lblSumNameVal = new Label();
+            lblSumOwnerVal = new Label();
+            lblSumAddressVal = new Label();
+            lblSumAmenitiesVal = new Label();
             grpImages = new GroupBox();
             imageTable = new TableLayoutPanel();
             pbImage1 = new PictureBox();
             pbImage2 = new PictureBox();
             pbImage3 = new PictureBox();
+            rbSlot1 = new RadioButton();
+            rbSlot2 = new RadioButton();
+            rbSlot3 = new RadioButton();
             pnlImageActions = new FlowLayoutPanel();
             btnUploadImages = new Button();
             lblImageHint = new Label();
@@ -557,38 +570,94 @@ namespace BoardingHouseSys.Forms
             // pnlDetailActions
             // 
             pnlDetailActions.AutoScroll = true;
+            pnlDetailActions.BackColor = Color.White;
+            pnlDetailActions.BorderStyle = BorderStyle.FixedSingle;
+            pnlDetailActions.Controls.Add(tblSummary);
             pnlDetailActions.Controls.Add(lblDetailSummaryTitle);
-            pnlDetailActions.Controls.Add(lblDetailSummary);
             pnlDetailActions.Dock = DockStyle.Bottom;
             pnlDetailActions.Location = new Point(16, 790);
             pnlDetailActions.Name = "pnlDetailActions";
-            pnlDetailActions.Padding = new Padding(10);
-            pnlDetailActions.Size = new Size(91, 150);
+            pnlDetailActions.Padding = new Padding(15);
+            pnlDetailActions.Size = new Size(91, 220); // Increased height
             pnlDetailActions.TabIndex = 6;
             // 
             // lblDetailSummaryTitle
             // 
             lblDetailSummaryTitle.AutoSize = true;
-            lblDetailSummaryTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblDetailSummaryTitle.Dock = DockStyle.Top;
+            lblDetailSummaryTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblDetailSummaryTitle.ForeColor = Color.FromArgb(0, 123, 255);
-            lblDetailSummaryTitle.Location = new Point(10, 10);
-            lblDetailSummaryTitle.Margin = new Padding(0, 0, 0, 10);
+            lblDetailSummaryTitle.Location = new Point(15, 15);
+            lblDetailSummaryTitle.Margin = new Padding(0, 0, 0, 15);
             lblDetailSummaryTitle.Name = "lblDetailSummaryTitle";
-            lblDetailSummaryTitle.Size = new Size(154, 21);
+            lblDetailSummaryTitle.Size = new Size(154, 25);
             lblDetailSummaryTitle.TabIndex = 0;
-            lblDetailSummaryTitle.Text = "Property Summary";
+            lblDetailSummaryTitle.Text = "Property Details";
             // 
-            // lblDetailSummary
+            // tblSummary
             // 
-            lblDetailSummary.AutoSize = true;
-            lblDetailSummary.Font = new Font("Segoe UI", 10F);
-            lblDetailSummary.ForeColor = Color.FromArgb(52, 58, 64);
-            lblDetailSummary.Location = new Point(13, 104);
-            lblDetailSummary.MaximumSize = new Size(380, 0);
-            lblDetailSummary.Name = "lblDetailSummary";
-            lblDetailSummary.Size = new Size(199, 19);
-            lblDetailSummary.TabIndex = 1;
-            lblDetailSummary.Text = "Select a property to see details.";
+            tblSummary.AutoSize = true;
+            tblSummary.ColumnCount = 2;
+            tblSummary.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100F));
+            tblSummary.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tblSummary.Controls.Add(new Label { Text = "Name:", Font = new Font("Segoe UI", 10F, FontStyle.Bold), ForeColor = Color.Gray, AutoSize = true }, 0, 0);
+            tblSummary.Controls.Add(lblSumNameVal, 1, 0);
+            tblSummary.Controls.Add(new Label { Text = "Owner:", Font = new Font("Segoe UI", 10F, FontStyle.Bold), ForeColor = Color.Gray, AutoSize = true }, 0, 1);
+            tblSummary.Controls.Add(lblSumOwnerVal, 1, 1);
+            tblSummary.Controls.Add(new Label { Text = "Address:", Font = new Font("Segoe UI", 10F, FontStyle.Bold), ForeColor = Color.Gray, AutoSize = true }, 0, 2);
+            tblSummary.Controls.Add(lblSumAddressVal, 1, 2);
+            tblSummary.Controls.Add(new Label { Text = "Amenities:", Font = new Font("Segoe UI", 10F, FontStyle.Bold), ForeColor = Color.Gray, AutoSize = true }, 0, 3);
+            tblSummary.Controls.Add(lblSumAmenitiesVal, 1, 3);
+            tblSummary.Dock = DockStyle.Top;
+            tblSummary.Location = new Point(15, 55); // Below title
+            tblSummary.Name = "tblSummary";
+            tblSummary.RowCount = 4;
+            tblSummary.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tblSummary.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tblSummary.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tblSummary.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tblSummary.Size = new Size(61, 100);
+            tblSummary.TabIndex = 1;
+            // 
+            // lblSumNameVal
+            // 
+            lblSumNameVal.AutoSize = true;
+            lblSumNameVal.Font = new Font("Segoe UI", 10F);
+            lblSumNameVal.ForeColor = Color.Black;
+            lblSumNameVal.Dock = DockStyle.Fill;
+            lblSumNameVal.Margin = new Padding(0, 0, 0, 8);
+            lblSumNameVal.Name = "lblSumNameVal";
+            lblSumNameVal.Text = "-";
+            // 
+            // lblSumOwnerVal
+            // 
+            lblSumOwnerVal.AutoSize = true;
+            lblSumOwnerVal.Font = new Font("Segoe UI", 10F);
+            lblSumOwnerVal.ForeColor = Color.Black;
+            lblSumOwnerVal.Dock = DockStyle.Fill;
+            lblSumOwnerVal.Margin = new Padding(0, 0, 0, 8);
+            lblSumOwnerVal.Name = "lblSumOwnerVal";
+            lblSumOwnerVal.Text = "-";
+            // 
+            // lblSumAddressVal
+            // 
+            lblSumAddressVal.AutoSize = true;
+            lblSumAddressVal.Font = new Font("Segoe UI", 10F);
+            lblSumAddressVal.ForeColor = Color.Black;
+            lblSumAddressVal.Dock = DockStyle.Fill;
+            lblSumAddressVal.Margin = new Padding(0, 0, 0, 8);
+            lblSumAddressVal.Name = "lblSumAddressVal";
+            lblSumAddressVal.Text = "-";
+            // 
+            // lblSumAmenitiesVal
+            // 
+            lblSumAmenitiesVal.AutoSize = true;
+            lblSumAmenitiesVal.Font = new Font("Segoe UI", 10F);
+            lblSumAmenitiesVal.ForeColor = Color.Black;
+            lblSumAmenitiesVal.Dock = DockStyle.Fill;
+            lblSumAmenitiesVal.Margin = new Padding(0, 0, 0, 8);
+            lblSumAmenitiesVal.Name = "lblSumAmenitiesVal";
+            lblSumAmenitiesVal.Text = "-";
             // 
             // grpImages
             // 
@@ -598,10 +667,10 @@ namespace BoardingHouseSys.Forms
             grpImages.Location = new Point(16, 556);
             grpImages.Name = "grpImages";
             grpImages.Padding = new Padding(8);
-            grpImages.Size = new Size(91, 250);
+            grpImages.Size = new Size(91, 280); // Increased height for radio buttons
             grpImages.TabIndex = 4;
             grpImages.TabStop = false;
-            grpImages.Text = "Pictures";
+            grpImages.Text = "Property Pictures";
             // 
             // imageTable
             // 
@@ -612,24 +681,29 @@ namespace BoardingHouseSys.Forms
             imageTable.Controls.Add(pbImage1, 0, 0);
             imageTable.Controls.Add(pbImage2, 1, 0);
             imageTable.Controls.Add(pbImage3, 2, 0);
-            imageTable.Controls.Add(pnlImageActions, 0, 1);
+            imageTable.Controls.Add(rbSlot1, 0, 1);
+            imageTable.Controls.Add(rbSlot2, 1, 1);
+            imageTable.Controls.Add(rbSlot3, 2, 1);
+            imageTable.Controls.Add(pnlImageActions, 0, 2);
             imageTable.Dock = DockStyle.Fill;
             imageTable.Location = new Point(8, 24);
             imageTable.Name = "imageTable";
-            imageTable.RowCount = 2;
-            imageTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 140F));
-            imageTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            imageTable.Size = new Size(75, 218);
+            imageTable.RowCount = 3;
+            imageTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 150F)); // Taller images
+            imageTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));  // Radio buttons
+            imageTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));  // Actions
+            imageTable.Size = new Size(75, 248);
             imageTable.TabIndex = 0;
             // 
             // pbImage1
             // 
             pbImage1.BackColor = Color.White;
             pbImage1.BorderStyle = BorderStyle.FixedSingle;
+            pbImage1.Cursor = Cursors.Hand;
             pbImage1.Dock = DockStyle.Fill;
             pbImage1.Location = new Point(3, 3);
             pbImage1.Name = "pbImage1";
-            pbImage1.Size = new Size(18, 134);
+            pbImage1.Size = new Size(18, 144);
             pbImage1.SizeMode = PictureBoxSizeMode.Zoom;
             pbImage1.TabIndex = 0;
             pbImage1.TabStop = false;
@@ -638,10 +712,11 @@ namespace BoardingHouseSys.Forms
             // 
             pbImage2.BackColor = Color.White;
             pbImage2.BorderStyle = BorderStyle.FixedSingle;
+            pbImage2.Cursor = Cursors.Hand;
             pbImage2.Dock = DockStyle.Fill;
             pbImage2.Location = new Point(27, 3);
             pbImage2.Name = "pbImage2";
-            pbImage2.Size = new Size(18, 134);
+            pbImage2.Size = new Size(18, 144);
             pbImage2.SizeMode = PictureBoxSizeMode.Zoom;
             pbImage2.TabIndex = 1;
             pbImage2.TabStop = false;
@@ -650,13 +725,51 @@ namespace BoardingHouseSys.Forms
             // 
             pbImage3.BackColor = Color.White;
             pbImage3.BorderStyle = BorderStyle.FixedSingle;
+            pbImage3.Cursor = Cursors.Hand;
             pbImage3.Dock = DockStyle.Fill;
             pbImage3.Location = new Point(51, 3);
             pbImage3.Name = "pbImage3";
-            pbImage3.Size = new Size(21, 134);
+            pbImage3.Size = new Size(21, 144);
             pbImage3.SizeMode = PictureBoxSizeMode.Zoom;
             pbImage3.TabIndex = 2;
             pbImage3.TabStop = false;
+            // 
+            // rbSlot1
+            // 
+            rbSlot1.AutoSize = true;
+            rbSlot1.Dock = DockStyle.Top;
+            rbSlot1.Location = new Point(3, 153);
+            rbSlot1.Name = "rbSlot1";
+            rbSlot1.Size = new Size(18, 24);
+            rbSlot1.TabIndex = 3;
+            rbSlot1.TabStop = true;
+            rbSlot1.Text = "Slot 1";
+            rbSlot1.UseVisualStyleBackColor = true;
+            rbSlot1.Checked = true;
+            // 
+            // rbSlot2
+            // 
+            rbSlot2.AutoSize = true;
+            rbSlot2.Dock = DockStyle.Top;
+            rbSlot2.Location = new Point(27, 153);
+            rbSlot2.Name = "rbSlot2";
+            rbSlot2.Size = new Size(18, 24);
+            rbSlot2.TabIndex = 4;
+            rbSlot2.TabStop = true;
+            rbSlot2.Text = "Slot 2";
+            rbSlot2.UseVisualStyleBackColor = true;
+            // 
+            // rbSlot3
+            // 
+            rbSlot3.AutoSize = true;
+            rbSlot3.Dock = DockStyle.Top;
+            rbSlot3.Location = new Point(51, 153);
+            rbSlot3.Name = "rbSlot3";
+            rbSlot3.Size = new Size(21, 24);
+            rbSlot3.TabIndex = 5;
+            rbSlot3.TabStop = true;
+            rbSlot3.Text = "Slot 3";
+            rbSlot3.UseVisualStyleBackColor = true;
             // 
             // pnlImageActions
             // 
@@ -665,11 +778,11 @@ namespace BoardingHouseSys.Forms
             imageTable.SetColumnSpan(pnlImageActions, 3);
             pnlImageActions.Controls.Add(btnUploadImages);
             pnlImageActions.Dock = DockStyle.Fill;
-            pnlImageActions.Location = new Point(3, 143);
+            pnlImageActions.Location = new Point(3, 183);
             pnlImageActions.Name = "pnlImageActions";
             pnlImageActions.Padding = new Padding(6, 4, 6, 4);
-            pnlImageActions.Size = new Size(69, 72);
-            pnlImageActions.TabIndex = 3;
+            pnlImageActions.Size = new Size(69, 62);
+            pnlImageActions.TabIndex = 6;
             pnlImageActions.WrapContents = false;
             // 
             // btnUploadImages
@@ -1068,9 +1181,53 @@ namespace BoardingHouseSys.Forms
             this.dgvSearchResults.SelectionChanged += (s, e) => OnSearchSelectionChanged();
             this.dgvSearchResults.CellDoubleClick += OnSearchCellDoubleClick;
             this.btnUploadImages.Click += (s, e) => UploadImagesForProperty();
-            this.pbImage1.Click += (s, e) => SelectImageSlot(1);
-            this.pbImage2.Click += (s, e) => SelectImageSlot(2);
-            this.pbImage3.Click += (s, e) => SelectImageSlot(3);
+            this.pbImage1.Click += (s, e) => ShowFullScreenImage(pbImage1.Image);
+            this.pbImage2.Click += (s, e) => ShowFullScreenImage(pbImage2.Image);
+            this.pbImage3.Click += (s, e) => ShowFullScreenImage(pbImage3.Image);
+            
+            if (rbSlot1 != null) rbSlot1.CheckedChanged += (s, e) => { if (rbSlot1.Checked) SelectImageSlot(1); };
+            if (rbSlot2 != null) rbSlot2.CheckedChanged += (s, e) => { if (rbSlot2.Checked) SelectImageSlot(2); };
+            if (rbSlot3 != null) rbSlot3.CheckedChanged += (s, e) => { if (rbSlot3.Checked) SelectImageSlot(3); };
+        }
+
+        private void ShowFullScreenImage(Image? image)
+        {
+            if (image == null) return;
+
+            Form fullScreenForm = new Form();
+            fullScreenForm.FormBorderStyle = FormBorderStyle.None;
+            fullScreenForm.WindowState = FormWindowState.Maximized;
+            fullScreenForm.BackColor = Color.Black;
+            fullScreenForm.StartPosition = FormStartPosition.CenterScreen;
+
+            PictureBox pbFull = new PictureBox();
+            pbFull.Image = image;
+            pbFull.SizeMode = PictureBoxSizeMode.Zoom;
+            pbFull.Dock = DockStyle.Fill;
+            pbFull.BackColor = Color.Black;
+
+            Button btnBack = new Button();
+            btnBack.Text = "Back to System";
+            btnBack.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            btnBack.ForeColor = Color.White;
+            btnBack.BackColor = Color.FromArgb(220, 53, 69); // Red
+            btnBack.FlatStyle = FlatStyle.Flat;
+            btnBack.FlatAppearance.BorderSize = 0;
+            btnBack.AutoSize = true;
+            btnBack.Padding = new Padding(10, 5, 10, 5);
+            btnBack.Cursor = Cursors.Hand;
+            btnBack.Location = new Point(20, 20); // Top Left
+            
+            // Wire events
+            btnBack.Click += (s, e) => fullScreenForm.Close();
+            
+            // Add controls (Button last to be on top if using Controls.Add, but DockStyle.Fill on PictureBox might cover it.
+            // Better to use Controls.Add(btnBack); Controls.Add(pbFull); and ensure btnBack is brought to front.
+            fullScreenForm.Controls.Add(btnBack);
+            fullScreenForm.Controls.Add(pbFull);
+            btnBack.BringToFront();
+            
+            fullScreenForm.ShowDialog();
         }
 
         private void InitializeSearchDebounce()
@@ -1415,13 +1572,10 @@ namespace BoardingHouseSys.Forms
             if (txtDetailOwner != null) txtDetailOwner.Text = string.IsNullOrWhiteSpace(bh.OwnerName) ? string.Empty : bh.OwnerName;
             if (lblDetailsHint != null) lblDetailsHint.Visible = false;
             
-            if (lblDetailSummary != null)
-            {
-                lblDetailSummary.Text = $"Name: {bh.Name}\n" +
-                                      $"Owner: {bh.OwnerName ?? "N/A"}\n" +
-                                      $"Address: {bh.Address}\n" +
-                                      $"Amenities: {(string.IsNullOrEmpty(bh.Amenities) ? "None" : bh.Amenities)}";
-            }
+            if (lblSumNameVal != null) lblSumNameVal.Text = bh.Name;
+            if (lblSumOwnerVal != null) lblSumOwnerVal.Text = bh.OwnerName ?? "N/A";
+            if (lblSumAddressVal != null) lblSumAddressVal.Text = bh.Address;
+            if (lblSumAmenitiesVal != null) lblSumAmenitiesVal.Text = string.IsNullOrEmpty(bh.Amenities) ? "None" : bh.Amenities;
 
             UpdateImageBoxes();
             UpdateImageActionVisibility();
@@ -1439,7 +1593,12 @@ namespace BoardingHouseSys.Forms
             if (txtDetailAmenities != null) txtDetailAmenities.Text = string.Empty;
             if (txtDetailOwner != null) txtDetailOwner.Text = string.Empty;
             if (lblDetailsHint != null) lblDetailsHint.Visible = true;
-            if (lblDetailSummary != null) lblDetailSummary.Text = "Select a property to see details.";
+            
+            if (lblSumNameVal != null) lblSumNameVal.Text = "-";
+            if (lblSumOwnerVal != null) lblSumOwnerVal.Text = "-";
+            if (lblSumAddressVal != null) lblSumAddressVal.Text = "-";
+            if (lblSumAmenitiesVal != null) lblSumAmenitiesVal.Text = "-";
+            
             ClearImageBoxes();
             UpdateImageActionVisibility();
         }
@@ -1971,6 +2130,7 @@ namespace BoardingHouseSys.Forms
                         INNER JOIN BoardingHouses bh ON b.BoardingHouseId = bh.Id
                         WHERE p.MonthPaid = '{currentMonth}' 
                           AND p.YearPaid = {currentYear}
+                          AND p.Status = 'Paid'
                           AND bh.OwnerId = {ownerId}";
                     income = Convert.ToDecimal(_dbHelper.ExecuteScalar(sqlIncomeOwner));
 
@@ -1994,7 +2154,7 @@ namespace BoardingHouseSys.Forms
                     string sqlBoarders = "SELECT COUNT(*) FROM Boarders WHERE IsActive = 1";
                     totalBoarders = Convert.ToInt64(_dbHelper.ExecuteScalar(sqlBoarders));
 
-                    string sqlIncome = $"SELECT COALESCE(SUM(Amount), 0) FROM Payments WHERE MonthPaid = '{currentMonth}' AND YearPaid = {currentYear}";
+                    string sqlIncome = $"SELECT COALESCE(SUM(Amount), 0) FROM Payments WHERE MonthPaid = '{currentMonth}' AND YearPaid = {currentYear} AND Status = 'Paid'";
                     income = Convert.ToDecimal(_dbHelper.ExecuteScalar(sqlIncome));
 
                     string sqlCapacity = "SELECT COALESCE(SUM(Capacity), 0) FROM Rooms WHERE IsActive = 1";
@@ -2053,12 +2213,13 @@ namespace BoardingHouseSys.Forms
                                 INNER JOIN BoardingHouses bh ON b.BoardingHouseId = bh.Id
                                 WHERE p.MonthPaid = '{mName}' 
                                   AND p.YearPaid = {y}
+                                  AND p.Status = 'Paid'
                                   AND bh.OwnerId = {ownerId}";
                             val = Convert.ToDecimal(_dbHelper.ExecuteScalar(sqlTrendOwner));
                         }
                         else
                         {
-                            string sqlTrend = $"SELECT COALESCE(SUM(Amount), 0) FROM Payments WHERE MonthPaid = '{mName}' AND YearPaid = {y}";
+                            string sqlTrend = $"SELECT COALESCE(SUM(Amount), 0) FROM Payments WHERE MonthPaid = '{mName}' AND YearPaid = {y} AND Status = 'Paid'";
                             val = Convert.ToDecimal(_dbHelper.ExecuteScalar(sqlTrend));
                         }
                         
@@ -2081,6 +2242,7 @@ namespace BoardingHouseSys.Forms
                         LEFT JOIN Payments p ON p.BoarderId = b.Id 
                             AND p.MonthPaid = '{currentMonth}' 
                             AND p.YearPaid = {currentYear}
+                            AND p.Status = 'Paid'
                         WHERE bh.IsActive = 1
                           AND bh.OwnerId = {ownerId}
                         GROUP BY bh.Id, bh.Name";
@@ -2097,6 +2259,7 @@ namespace BoardingHouseSys.Forms
                         LEFT JOIN Payments p ON p.BoarderId = b.Id 
                             AND p.MonthPaid = '{currentMonth}' 
                             AND p.YearPaid = {currentYear}
+                            AND p.Status = 'Paid'
                         WHERE bh.IsActive = 1
                         GROUP BY bh.Id, bh.Name";
                 }

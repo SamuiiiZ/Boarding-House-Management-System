@@ -96,7 +96,7 @@
               "RelativeDocumentMoniker": "BoardingHouseSys\\Models\\Boarder.cs",
               "ToolTip": "C:\\Users\\ryane\\Downloads\\Boarding-House-Management-System-main (1)\\Boarding-House-Management-System-main\\Boarding House Management System\\BoardingHouseSys\\Models\\Boarder.cs",
               "RelativeToolTip": "BoardingHouseSys\\Models\\Boarder.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-28T09:44:28.525Z",
               "EditorCaption": ""
@@ -147,8 +147,7 @@
               "RelativeToolTip": "BoardingHouseSys\\Data\\BoardingHouseRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-16T06:54:35.274Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T06:54:35.274Z"
             },
             {
               "$type": "Document",
@@ -160,8 +159,7 @@
               "RelativeToolTip": "BoardingHouseSys\\Data\\DatabaseBootstrap.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-16T06:16:48.021Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T06:16:48.021Z"
             },
             {
               "$type": "Document",

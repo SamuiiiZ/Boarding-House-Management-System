@@ -361,8 +361,7 @@ namespace BoardingHouseSys.Forms
             tableLayout.Controls.Add(txtAmenities, 0, 9);
             tableLayout.Controls.Add(lblName, 0, 0);
             // Picture controls removed from layout (redundant with Boarding Houses screen)
-            tableLayout.Controls.Add(lblDetailSummaryTitle, 0, 10);
-            tableLayout.Controls.Add(lblDetailSummary, 0, 11);
+            // Summary controls removed from layout (redundant with input fields)
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.Location = new Point(14, 28);
             tableLayout.Margin = new Padding(2);

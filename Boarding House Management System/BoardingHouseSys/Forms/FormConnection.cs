@@ -215,12 +215,12 @@ namespace BoardingHouseSys.Forms
 
         private void LoadSettings()
         {
-            // Load from file if exists
-            if (File.Exists("db_config.txt"))
+            string path = AppConfig.GetConfigPath();
+            if (File.Exists(path))
             {
                 try
                 {
-                    string[] lines = File.ReadAllLines("db_config.txt");
+                    string[] lines = File.ReadAllLines(path);
                     if (lines.Length >= 4)
                     {
                         txtServer.Text = lines[0].Split('=')[1];
@@ -275,7 +275,8 @@ namespace BoardingHouseSys.Forms
                     $"Uid={txtUser.Text}",
                     $"Pwd={txtPassword.Text}"
                 };
-                File.WriteAllLines("db_config.txt", lines);
+                string path = AppConfig.GetConfigPath();
+                File.WriteAllLines(path, lines);
 
                 DatabaseHelper.SetConnectionString(BuildConnectionString());
 
@@ -316,7 +317,8 @@ namespace BoardingHouseSys.Forms
                     $"Uid={txtUser.Text}",
                     $"Pwd={txtPassword.Text}"
                 };
-                File.WriteAllLines("db_config.txt", lines);
+                string path = AppConfig.GetConfigPath();
+                File.WriteAllLines(path, lines);
 
                 DatabaseHelper.SetConnectionString(BuildConnectionString());
 

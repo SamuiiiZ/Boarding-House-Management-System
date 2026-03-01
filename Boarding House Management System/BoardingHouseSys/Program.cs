@@ -56,7 +56,7 @@ static class Program
 
     static string? TryLoadConnectionFromConfig()
     {
-        string path = Path.Combine(AppContext.BaseDirectory, "db_config.txt");
+        string path = AppConfig.GetConfigPath();
         if (!File.Exists(path)) return null;
 
         try

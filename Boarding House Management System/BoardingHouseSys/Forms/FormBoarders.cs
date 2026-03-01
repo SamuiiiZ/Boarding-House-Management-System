@@ -344,7 +344,7 @@ namespace BoardingHouseSys.Forms
             btnBackTop.Size = new Size(180, 30);
             btnBackTop.TabIndex = 0;
             btnBackTop.Text = "← Back to Dashboard";
-            btnBackTop.TextAlign = ContentAlignment.MiddleLeft;
+            btnBackTop.TextAlign = ContentAlignment.MiddleCenter;
             btnBackTop.UseVisualStyleBackColor = false;
             // 
             // splitContainer1
@@ -642,7 +642,7 @@ namespace BoardingHouseSys.Forms
             numPaymentYear.Name = "numPaymentYear";
             numPaymentYear.Size = new Size(24, 25);
             numPaymentYear.TabIndex = 5;
-            numPaymentYear.Value = new decimal(new int[] { 2024, 0, 0, 0 });
+            numPaymentYear.Value = new decimal(new int[] { DateTime.Now.Year, 0, 0, 0 });
             // 
             // lblPaymentStatus
             // 
@@ -1866,7 +1866,7 @@ namespace BoardingHouseSys.Forms
                 Amount = amount,
                 MonthPaid = cmbPaymentMonth.Text,
                 YearPaid = (int)numPaymentYear.Value,
-                Status = cmbPaymentStatus.Text,
+                Status = string.IsNullOrWhiteSpace(cmbPaymentStatus.Text) ? "Pending" : cmbPaymentStatus.Text,
                 Notes = txtPaymentNotes.Text,
                 PaymentDate = DateTime.Now
             };
@@ -1905,7 +1905,7 @@ namespace BoardingHouseSys.Forms
                 Amount = amount,
                 MonthPaid = cmbPaymentMonth.Text,
                 YearPaid = (int)numPaymentYear.Value,
-                Status = cmbPaymentStatus.Text,
+                Status = string.IsNullOrWhiteSpace(cmbPaymentStatus.Text) ? "Pending" : cmbPaymentStatus.Text,
                 Notes = txtPaymentNotes.Text,
                 PaymentDate = DateTime.Now
             };
