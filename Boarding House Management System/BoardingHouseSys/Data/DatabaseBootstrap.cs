@@ -1,5 +1,6 @@
 using System;
 using MySql.Data.MySqlClient;
+using BoardingHouseSys.Services;
 
 namespace BoardingHouseSys.Data
 {
@@ -10,22 +11,31 @@ namespace BoardingHouseSys.Data
 
         public static void Initialize()
         {
+            InitializeInternal(_serverConnection, _dbConnection, "superadmin", "password123", "admin", "password123");
+        }
+
+        public static void Install(string baseConnection, string databaseName, string superAdminUsername, string superAdminPassword, string? adminUsername = null, string? adminPassword = null)
+        {
+            string serverConn = baseConnection;
+            string dbConn = baseConnection + $"Database={databaseName};";
+            InitializeInternal(serverConn, dbConn, superAdminUsername, superAdminPassword, adminUsername, adminPassword);
+        }
+
+        private static void InitializeInternal(string serverConnection, string dbConnection, string superAdminUsername, string superAdminPassword, string? adminUsername, string? adminPassword)
+        {
             try
             {
-                // 1. Create Database if it doesn't exist
-                using (var conn = new MySqlConnection(_serverConnection))
+                using (var conn = new MySqlConnection(serverConnection))
                 {
                     conn.Open();
                     var cmd = new MySqlCommand("CREATE DATABASE IF NOT EXISTS BoardingHouseDB;", conn);
                     cmd.ExecuteNonQuery();
                 }
 
-                // 2. Create Tables
-                using (var conn = new MySqlConnection(_dbConnection))
+                using (var conn = new MySqlConnection(dbConnection))
                 {
                     conn.Open();
                     
-                    // Users Table
                     string sqlUsers = @"
                         CREATE TABLE IF NOT EXISTS Users (
                             Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -37,7 +47,6 @@ namespace BoardingHouseSys.Data
                         );";
                     new MySqlCommand(sqlUsers, conn).ExecuteNonQuery();
 
-                    // Rooms Table
                     string sqlRooms = @"
                         CREATE TABLE IF NOT EXISTS Rooms (
                             Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -49,7 +58,6 @@ namespace BoardingHouseSys.Data
                         );";
                     new MySqlCommand(sqlRooms, conn).ExecuteNonQuery();
 
-                    // Boarders Table
                     string sqlBoarders = @"
                         CREATE TABLE IF NOT EXISTS Boarders (
                             Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -65,7 +73,6 @@ namespace BoardingHouseSys.Data
                         );";
                     new MySqlCommand(sqlBoarders, conn).ExecuteNonQuery();
 
-                    // Payments Table
                     string sqlPayments = @"
                         CREATE TABLE IF NOT EXISTS Payments (
                             Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -80,11 +87,6 @@ namespace BoardingHouseSys.Data
                         );";
                     new MySqlCommand(sqlPayments, conn).ExecuteNonQuery();
 
-                    // ==========================================
-                    // NEW: Multi-Property Features
-                    // ==========================================
-
-                    // 1. Create BoardingHouses Table
                     string sqlBH = @"
                         CREATE TABLE IF NOT EXISTS BoardingHouses (
                             Id INT PRIMARY KEY AUTO_INCREMENT,
@@ -120,7 +122,6 @@ namespace BoardingHouseSys.Data
                         new MySqlCommand(addCompositeUnique, conn).ExecuteNonQuery();
                     } catch (Exception) { }
 
-                    // 3. Add BoardingHouseId to Boarders
                     try {
                         string alterBoarders = "ALTER TABLE Boarders ADD COLUMN BoardingHouseId INT NULL;";
                         new MySqlCommand(alterBoarders, conn).ExecuteNonQuery();
@@ -128,7 +129,6 @@ namespace BoardingHouseSys.Data
                         new MySqlCommand(fkBoarders, conn).ExecuteNonQuery();
                     } catch (Exception) { /* Column likely exists */ }
 
-                    // 6. Add ProfilePicturePath to Boarders
                     try {
                         string alterBoardersPic = "ALTER TABLE Boarders ADD COLUMN ProfilePicturePath VARCHAR(500) NULL;";
                         new MySqlCommand(alterBoardersPic, conn).ExecuteNonQuery();
@@ -147,8 +147,6 @@ namespace BoardingHouseSys.Data
                         new MySqlCommand(alterBhPic3, conn).ExecuteNonQuery();
                     } catch (Exception) { /* Column likely exists */ }
 
-                    // 5. Seed Default Boarding House (Migration for existing data)
-                    // If we have rooms but no BoardingHouses, create a default one and link them.
                     var checkBH = new MySqlCommand("SELECT COUNT(*) FROM BoardingHouses", conn);
                     long bhCount = (long)checkBH.ExecuteScalar();
 
@@ -162,7 +160,6 @@ namespace BoardingHouseSys.Data
                         {
                             int adminId = Convert.ToInt32(adminIdObj);
                             
-                            // Insert Default House
                             string seedBH = @"
                                 INSERT INTO BoardingHouses (OwnerId, Name, Address, Description) 
                                 VALUES (@OwnerId, 'My Main Boarding House', 'Default Address', 'Main Property');
@@ -172,22 +169,37 @@ namespace BoardingHouseSys.Data
                             cmdSeed.Parameters.AddWithValue("@OwnerId", adminId);
                             int newBhId = Convert.ToInt32(cmdSeed.ExecuteScalar());
 
-                            // Update existing records to belong to this house
                             new MySqlCommand($"UPDATE Rooms SET BoardingHouseId = {newBhId} WHERE BoardingHouseId IS NULL", conn).ExecuteNonQuery();
                             new MySqlCommand($"UPDATE Boarders SET BoardingHouseId = {newBhId} WHERE BoardingHouseId IS NULL", conn).ExecuteNonQuery();
                         }
                     }
 
-                    // 3. Seed Data (Only if empty)
                     var checkCmd = new MySqlCommand("SELECT COUNT(*) FROM Users", conn);
                     long userCount = (long)checkCmd.ExecuteScalar();
 
                     if (userCount == 0)
                     {
+                        string superHash = SecurityHelper.HashPassword(superAdminPassword);
                         string seedUsers = @"
-                            INSERT INTO Users (Username, PasswordHash, Role) VALUES ('superadmin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'SuperAdmin');
-                            INSERT INTO Users (Username, PasswordHash, Role) VALUES ('admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Admin');";
-                        new MySqlCommand(seedUsers, conn).ExecuteNonQuery();
+                            INSERT INTO Users (Username, PasswordHash, Role) VALUES (@SuperUser, @SuperHash, 'SuperAdmin');";
+
+                        bool addAdmin = !string.IsNullOrWhiteSpace(adminUsername) && !string.IsNullOrWhiteSpace(adminPassword);
+                        if (addAdmin)
+                        {
+                            seedUsers += @"
+                            INSERT INTO Users (Username, PasswordHash, Role) VALUES (@AdminUser, @AdminHash, 'Admin');";
+                        }
+
+                        var cmdSeedUsers = new MySqlCommand(seedUsers, conn);
+                        cmdSeedUsers.Parameters.AddWithValue("@SuperUser", superAdminUsername);
+                        cmdSeedUsers.Parameters.AddWithValue("@SuperHash", superHash);
+                        if (addAdmin)
+                        {
+                            string adminHash = SecurityHelper.HashPassword(adminPassword!);
+                            cmdSeedUsers.Parameters.AddWithValue("@AdminUser", adminUsername);
+                            cmdSeedUsers.Parameters.AddWithValue("@AdminHash", adminHash);
+                        }
+                        cmdSeedUsers.ExecuteNonQuery();
 
                         string seedRooms = @"
                             INSERT INTO Rooms (RoomNumber, Capacity, MonthlyRate) VALUES ('101', 2, 5000.00);
@@ -199,7 +211,6 @@ namespace BoardingHouseSys.Data
             }
             catch (Exception ex)
             {
-                // Re-throw to be caught in Program.cs and shown to user
                 throw new Exception("Database Initialization Failed: " + ex.Message);
             }
         }
